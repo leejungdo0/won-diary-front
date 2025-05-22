@@ -2,6 +2,7 @@ import Gyemun from "@/components/Gyemun";
 import GyoDangNaeWang from "@/components/GyoDangNaeWang";
 import Mirijoonbi from "@/components/Mirijoonbi";
 import OnSaengChwi from "@/components/OnSaengChwi";
+import ResetLocalStorageButton from "@/components/ResetLocalStorageButton";
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
       <Mirijoonbi />
       <GyoDangNaeWang />
       <Gyemun />
+      <ResetLocalStorageButton />
     </main>
   );
 }
