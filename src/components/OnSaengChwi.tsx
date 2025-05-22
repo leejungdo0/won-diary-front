@@ -20,28 +20,33 @@ export default function OnSaengChwi() {
   const getTeamKey = (date: string) => `team-${date}`;
 
   // Load data
-  useEffect(() => {
+    useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const stored = localStorage.getItem(getStorageKey(date));
     if (stored) {
-      try {
+        try {
         setOnSaengchwi(JSON.parse(stored));
-      } catch (e) {
+        } catch (e) {
         console.error("파싱 오류:", e);
-      }
+        }
     }
 
     const storedTeam = localStorage.getItem(getTeamKey(date));
     if (storedTeam) setTeam(storedTeam);
-  }, [date]);
+    }, [date]);
 
-  // Save data
-  useEffect(() => {
-    localStorage.setItem(getStorageKey(date), JSON.stringify(onSaengchwi));
-  }, [onSaengchwi, date]);
+    // Save onSaengchwi
+    useEffect(() => {
+    if (typeof window === "undefined") return;
+        localStorage.setItem(getStorageKey(date), JSON.stringify(onSaengchwi));
+    }, [onSaengchwi, date]);
 
-  useEffect(() => {
-    localStorage.setItem(getTeamKey(date), team);
-  }, [team, date]);
+    // Save team
+    useEffect(() => {
+    if (typeof window === "undefined") return;
+        localStorage.setItem(getTeamKey(date), team);
+    }, [team, date]);
 
   // 유념 swipe
   const handleSwipeLeftYunyum = () => {

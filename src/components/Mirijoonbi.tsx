@@ -8,23 +8,23 @@ import { format } from "date-fns";
 import { useSwipeable } from "react-swipeable";
 
 export default function Mirijoonbi() {
-  const getTodayDateString = () => new Date().toISOString().split("T")[0];
-
   const [team, setTeam] = useState("");
   const [date, setDate] = useState(format(new Date(), "yyyy-MM-dd"));
-  const [onSaengchwi, setOnSaengchwi] = useState({ yunyum: 0, munyum: 0 });
+  const [miRiJoonBi, setMirijoonbi] = useState({ yunyum: 0, munyum: 0 });
   const [highlightedYunyum, setHighlightedYunyum] = useState(false);
   const [highlightedMunyum, setHighlightedMunyum] = useState(false);
 
-  const getStorageKey = (date: string) => `onSaengchwi-${date}`;
-  const getTeamKey = (date: string) => `team-${date}`;
+  const getStorageKey = (date: string) => `mirijoonbi-data-${date}`;
+  const getTeamKey = (date: string) => `mirijoonbi-team-${date}`;
 
   // 데이터 불러오기
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const stored = localStorage.getItem(getStorageKey(date));
     if (stored) {
       try {
-        setOnSaengchwi(JSON.parse(stored));
+        setMirijoonbi(JSON.parse(stored));
       } catch (e) {
         console.error("파싱 오류:", e);
       }
@@ -36,20 +36,22 @@ export default function Mirijoonbi() {
 
   // 데이터 저장
   useEffect(() => {
-    localStorage.setItem(getStorageKey(date), JSON.stringify(onSaengchwi));
-  }, [onSaengchwi, date]);
+    if (typeof window === "undefined") return;
+    localStorage.setItem(getStorageKey(date), JSON.stringify(miRiJoonBi));
+  }, [miRiJoonBi, date]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     localStorage.setItem(getTeamKey(date), team);
   }, [team, date]);
 
   // 증가/감소 함수
   const increment = (key: "yunyum" | "munyum") => {
-    setOnSaengchwi((prev) => ({ ...prev, [key]: prev[key] + 1 }));
+    setMirijoonbi((prev) => ({ ...prev, [key]: prev[key] + 1 }));
   };
 
   const decrement = (key: "yunyum" | "munyum") => {
-    setOnSaengchwi((prev) => ({ ...prev, [key]: Math.max(0, prev[key] - 1) }));
+    setMirijoonbi((prev) => ({ ...prev, [key]: Math.max(0, prev[key] - 1) }));
   };
 
   // 스와이프 핸들러
@@ -64,7 +66,7 @@ export default function Mirijoonbi() {
     },
     trackTouch: true,
     trackMouse: true,
-    preventScrollOnSwipe: true
+    preventScrollOnSwipe: true,
   });
 
   const swipeHandlersMunyum = useSwipeable({
@@ -78,7 +80,7 @@ export default function Mirijoonbi() {
     },
     trackTouch: true,
     trackMouse: true,
-    preventScrollOnSwipe: true
+    preventScrollOnSwipe: true,
   });
 
   // 하이라이트 초기화
@@ -106,7 +108,7 @@ export default function Mirijoonbi() {
               }`}
             >
               <label className="text-sm font-medium">
-                有念 ({onSaengchwi.yunyum})
+                有念 ({miRiJoonBi.yunyum})
               </label>
               <Button
                 variant="outline"
@@ -126,7 +128,7 @@ export default function Mirijoonbi() {
               }`}
             >
               <label className="text-sm font-medium">
-                無念 ({onSaengchwi.munyum})
+                無念 ({miRiJoonBi.munyum})
               </label>
               <Button
                 variant="outline"

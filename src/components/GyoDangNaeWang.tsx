@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
 
 interface SectionData {
   title: string;
@@ -12,17 +13,44 @@ interface SectionData {
 }
 
 export default function GyoDangNaeWang() {
-  const [sections, setSections] = useState<SectionData[]>([
+  const getTodayDateString = () => format(new Date(), "yyyy-MM-dd");
+  const [date, setDate] = useState(getTodayDateString());
+
+  const getStorageKey = (date: string) => `gyodangnaewang-${date}`;
+
+  const defaultSections: SectionData[] = [
     { title: "공부문답", yunyum: 0, munyum: 0 },
     { title: "감각감정", yunyum: 0, munyum: 0 },
     { title: "의심해오", yunyum: 0, munyum: 0 },
-  ]);
+  ];
+
+  const [sections, setSections] = useState<SectionData[]>(defaultSections);
+
+  // ✅ 데이터 불러오기
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const stored = localStorage.getItem(getStorageKey(date));
+    if (stored) {
+      try {
+        setSections(JSON.parse(stored));
+      } catch (e) {
+        console.error("불러오기 실패:", e);
+      }
+    } else {
+      setSections(defaultSections);
+    }
+  }, [date]);
+
+  // ✅ 데이터 저장
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    localStorage.setItem(getStorageKey(date), JSON.stringify(sections));
+  }, [sections, date]);
 
   const handleIncrement = (index: number, type: "yunyum" | "munyum") => {
     setSections((prev) => {
-      const currentValue = prev[index][type];
-      const displayedValue = sections[index][type];
-      if (currentValue !== displayedValue) return prev;
       const updated = [...prev];
       updated[index] = {
         ...updated[index],
@@ -32,10 +60,7 @@ export default function GyoDangNaeWang() {
     });
   };
 
-  console.log('교당내왕')
-
   return (
-
     <div className="max-w-md mx-auto mt-10 space-y-6">
       <Card>
         {sections.map((section, index) => (
