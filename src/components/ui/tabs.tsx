@@ -3,6 +3,7 @@ import { Slot } from "@radix-ui/react-slot";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { cn } from "@/lib/utils";
 import type { ComponentPropsWithoutRef, ElementRef } from "react";
+import { useSwipeable } from "react-swipeable";
 
 const Tabs = TabsPrimitive.Root;
 
@@ -63,58 +64,65 @@ TabsContent.displayName = TabsPrimitive.Content.displayName;
 
 // Main TabsComponent with activeTab state
 export const TabsComponent = () => {
-  const [activeTab, setActiveTab] = useState("bo"); // State to manage active tab
-  const [count, setCount] = useState(0);  // State for counting the number of clicks
-  const [animating, setAnimating] = useState(false); // To trigger animation
+  const [activeTab, setActiveTab] = useState("bo");
+  const [count, setCount] = useState(0);
+  const [animating, setAnimating] = useState(false);
 
-  // Handle the increment with animation trigger
   const increment = () => {
     setAnimating(true);
     setCount(count + 1);
-    setTimeout(() => setAnimating(false), 300); // Reset animation after 300ms
+    setTimeout(() => setAnimating(false), 300);
   };
 
+  const tabOrder = ["bo", "tuk", "법마상전급"];
+  const currentIndex = tabOrder.indexOf(activeTab);
+
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => {
+      const nextTab = tabOrder[(currentIndex + 1) % tabOrder.length];
+      setActiveTab(nextTab);
+    },
+    onSwipedRight: () => {
+      const prevTab = tabOrder[(currentIndex - 1 + tabOrder.length) % tabOrder.length];
+      setActiveTab(prevTab);
+    },
+    trackMouse: true,
+  });
+
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab}>
-      <TabsList>
-        <TabsTrigger value="bo" onClick={() => setActiveTab("bo")}>
-          보통급
-        </TabsTrigger>
-        <TabsTrigger value="tuk" onClick={() => setActiveTab("tuk")}>
-          특신급
-        </TabsTrigger>
-        <TabsTrigger value="법마상전급" onClick={() => setActiveTab("법마상전급")}>
-          법마상전급
-        </TabsTrigger>
-      </TabsList>
+    <div {...swipeHandlers} className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList>
+          <TabsTrigger value="bo" onClick={() => setActiveTab("bo")}>보통급</TabsTrigger>
+          <TabsTrigger value="tuk" onClick={() => setActiveTab("tuk")}>특신급</TabsTrigger>
+          <TabsTrigger value="법마상전급" onClick={() => setActiveTab("법마상전급")}>법마상전급</TabsTrigger>
+        </TabsList>
 
-      <TabsContent value="bo">
-        {/* BO_TONG_GUP Content */}
-        <div className="flex items-center justify-between">
-          <span>보통급: </span>
-          <div className={`count ${animating ? "animate-count" : ""}`}>{count}</div>
-          <button onClick={increment}>+</button>
-        </div>
-      </TabsContent>
+        <TabsContent value="bo">
+          <div className="flex items-center justify-between">
+            <span>보통급: </span>
+            <div className={`count ${animating ? "animate-count" : ""}`}>{count}</div>
+            <button onClick={increment}>+</button>
+          </div>
+        </TabsContent>
 
-      <TabsContent value="tuk">
-        {/* TUKSIN_GUP Content */}
-        <div className="flex items-center justify-between">
-          <span>특신급: </span>
-          <div className={`count ${animating ? "animate-count" : ""}`}>{count}</div>
-          <button onClick={increment}>+</button>
-        </div>
-      </TabsContent>
+        <TabsContent value="tuk">
+          <div className="flex items-center justify-between">
+            <span>특신급: </span>
+            <div className={`count ${animating ? "animate-count" : ""}`}>{count}</div>
+            <button onClick={increment}>+</button>
+          </div>
+        </TabsContent>
 
-      <TabsContent value="법마상전급">
-        {/* 법마상전급 Content */}
-        <div className="flex items-center justify-between">
-          <span>법마상전급: </span>
-          <div className={`count ${animating ? "animate-count" : ""}`}>{count}</div>
-          <button onClick={increment}>+</button>
-        </div>
-      </TabsContent>
-    </Tabs>
+        <TabsContent value="법마상전급">
+          <div className="flex items-center justify-between">
+            <span>법마상전급: </span>
+            <div className={`count ${animating ? "animate-count" : ""}`}>{count}</div>
+            <button onClick={increment}>+</button>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 
