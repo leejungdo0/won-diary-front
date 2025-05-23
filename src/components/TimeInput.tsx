@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "./ui/label";
 import { Switch } from "@/components/ui/switch";
 
@@ -74,7 +73,7 @@ export default function ExtraTimeInputCard() {
                 id={item}
                 type="range"
                 min="0"
-                max="720"
+                max="360"
                 step="5"
                 value={minutes}
                 onChange={(e) => handleChange(item, e.target.value)}
