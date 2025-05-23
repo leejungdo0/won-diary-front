@@ -1,93 +1,71 @@
+// OnSaengChwi.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { PlusIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
+import { PlusIcon } from "@radix-ui/react-icons";
 import { useSwipeable } from "react-swipeable";
+import { format } from "date-fns";
 
-export default function OnSaengChwi() {
-  const getTodayDateString = () => new Date().toISOString().split("T")[0];
-
-  const [team, setTeam] = useState("");
-  const [date, setDate] = useState(format(new Date(), "yyyy-MM-dd"));
+export default function OnSaengChwi({
+  synced,
+}: {
+  synced: { yunyum: number; munyum: number };
+}) {
+  const today = format(new Date(), "yyyy-MM-dd");
   const [onSaengchwi, setOnSaengchwi] = useState({ yunyum: 0, munyum: 0 });
   const [highlightedYunyum, setHighlightedYunyum] = useState(false);
   const [highlightedMunyum, setHighlightedMunyum] = useState(false);
 
   const getStorageKey = (date: string) => `onSaengchwi-${date}`;
-  const getTeamKey = (date: string) => `team-${date}`;
 
-  // Load data
-    useEffect(() => {
-    if (typeof window === "undefined") return;
+  // 외부에서 전달된 값으로 단방향 동기화
+  useEffect(() => {
+    setOnSaengchwi(synced);
+  }, [synced]);
 
-    const stored = localStorage.getItem(getStorageKey(date));
-    if (stored) {
-        try {
-        setOnSaengchwi(JSON.parse(stored));
-        } catch (e) {
-        console.error("파싱 오류:", e);
-        }
-    }
+  // 로컬 저장
+  useEffect(() => {
+    localStorage.setItem(getStorageKey(today), JSON.stringify(onSaengchwi));
+  }, [onSaengchwi, today]);
 
-    const storedTeam = localStorage.getItem(getTeamKey(date));
-    if (storedTeam) setTeam(storedTeam);
-    }, [date]);
-
-    // Save onSaengchwi
-    useEffect(() => {
-    if (typeof window === "undefined") return;
-        localStorage.setItem(getStorageKey(date), JSON.stringify(onSaengchwi));
-    }, [onSaengchwi, date]);
-
-    // Save team
-    useEffect(() => {
-    if (typeof window === "undefined") return;
-        localStorage.setItem(getTeamKey(date), team);
-    }, [team, date]);
-
-  // 유념 swipe
-  const handleSwipeLeftYunyum = () => {
-    setOnSaengchwi((prev) => ({ ...prev, yunyum: prev.yunyum + 1 }));
-    setHighlightedYunyum(true);
+  const increment = (key: "yunyum" | "munyum") => {
+    setOnSaengchwi((prev) => ({ ...prev, [key]: prev[key] + 1 }));
   };
 
-  const handleSwipeRightYunyum = () => {
-    setOnSaengchwi((prev) => ({ ...prev, yunyum: Math.max(0, prev.yunyum - 1) }));
-    setHighlightedYunyum(true);
+  const decrement = (key: "yunyum" | "munyum") => {
+    setOnSaengchwi((prev) => ({ ...prev, [key]: Math.max(0, prev[key] - 1) }));
   };
 
-  // 무념 swipe
-  const handleSwipeLeftMunyum = () => {
-    setOnSaengchwi((prev) => ({ ...prev, munyum: prev.munyum + 1 }));
-    setHighlightedMunyum(true);
-  };
-
-  const handleSwipeRightMunyum = () => {
-    setOnSaengchwi((prev) => ({ ...prev, munyum: Math.max(0, prev.munyum - 1) }));
-    setHighlightedMunyum(true);
-  };
-
-  // Swipe handlers
   const swipeHandlersYunyum = useSwipeable({
-    onSwipedLeft: handleSwipeLeftYunyum,
-    onSwipedRight: handleSwipeRightYunyum,
+    onSwipedLeft: () => {
+      increment("yunyum");
+      setHighlightedYunyum(true);
+    },
+    onSwipedRight: () => {
+      decrement("yunyum");
+      setHighlightedYunyum(true);
+    },
     trackTouch: true,
     trackMouse: true,
-    preventScrollOnSwipe: true
+    preventScrollOnSwipe: true,
   });
 
   const swipeHandlersMunyum = useSwipeable({
-    onSwipedLeft: handleSwipeLeftMunyum,
-    onSwipedRight: handleSwipeRightMunyum,
+    onSwipedLeft: () => {
+      increment("munyum");
+      setHighlightedMunyum(true);
+    },
+    onSwipedRight: () => {
+      decrement("munyum");
+      setHighlightedMunyum(true);
+    },
     trackTouch: true,
     trackMouse: true,
-    preventScrollOnSwipe: true
+    preventScrollOnSwipe: true,
   });
 
-  // Reset highlight
   useEffect(() => {
     if (highlightedYunyum || highlightedMunyum) {
       const timer = setTimeout(() => {
@@ -100,10 +78,10 @@ export default function OnSaengChwi() {
 
   return (
     <div className="max-w-md mx-auto mt-10 space-y-6">
-      <h1 className="text-xl font-semibold text-center">{date}</h1>
+      <h2 className="text-xl font-semibold text-center">{today}</h2>
       <Card>
         <CardContent className="space-y-4 pt-6">
-          <div className="block">온생취</div>
+          <div className="block font-semibold">온전 생각 취사</div>
 
           {/* 유념 */}
           <div {...swipeHandlersYunyum} className="cursor-pointer">
@@ -112,18 +90,13 @@ export default function OnSaengChwi() {
                 highlightedYunyum ? "bg-yellow-100" : ""
               }`}
             >
-              <label className="text-sm font-medium">
+              <label>
                 有念 ({onSaengchwi.yunyum})
               </label>
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() =>
-                  setOnSaengchwi((prev) => ({
-                    ...prev,
-                    yunyum: prev.yunyum + 1,
-                  }))
-                }
+                onClick={() => increment("yunyum")}
               >
                 <PlusIcon className="h-4 w-4 text-green-600" />
               </Button>
@@ -137,18 +110,13 @@ export default function OnSaengChwi() {
                 highlightedMunyum ? "bg-yellow-100" : ""
               }`}
             >
-              <label className="text-sm font-medium">
+              <label>
                 無念 ({onSaengchwi.munyum})
               </label>
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() =>
-                  setOnSaengchwi((prev) => ({
-                    ...prev,
-                    munyum: prev.munyum + 1,
-                  }))
-                }
+                onClick={() => increment("munyum")}
               >
                 <PlusIcon className="h-4 w-4 text-green-600" />
               </Button>

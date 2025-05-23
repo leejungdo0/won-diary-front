@@ -1,60 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { PlusIcon } from "@radix-ui/react-icons";
-import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
 import { useSwipeable } from "react-swipeable";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 
-export default function Mirijoonbi() {
-  const [team, setTeam] = useState("");
-  const [date, setDate] = useState(format(new Date(), "yyyy-MM-dd"));
-  const [miRiJoonBi, setMirijoonbi] = useState({ yunyum: 0, munyum: 0 });
+export default function Mirijoonbi({
+  miRiJoonBi,
+  increment,
+  decrement,
+}: {
+  miRiJoonBi: { yunyum: number; munyum: number };
+  increment: (key: "yunyum" | "munyum") => void;
+  decrement: (key: "yunyum" | "munyum") => void;
+}) {
   const [highlightedYunyum, setHighlightedYunyum] = useState(false);
   const [highlightedMunyum, setHighlightedMunyum] = useState(false);
 
-  const getStorageKey = (date: string) => `mirijoonbi-data-${date}`;
-  const getTeamKey = (date: string) => `mirijoonbi-team-${date}`;
-
-  // 데이터 불러오기
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const stored = localStorage.getItem(getStorageKey(date));
-    if (stored) {
-      try {
-        setMirijoonbi(JSON.parse(stored));
-      } catch (e) {
-        console.error("파싱 오류:", e);
-      }
-    }
-
-    const storedTeam = localStorage.getItem(getTeamKey(date));
-    if (storedTeam) setTeam(storedTeam);
-  }, [date]);
-
-  // 데이터 저장
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    localStorage.setItem(getStorageKey(date), JSON.stringify(miRiJoonBi));
-  }, [miRiJoonBi, date]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    localStorage.setItem(getTeamKey(date), team);
-  }, [team, date]);
-
-  // 증가/감소 함수
-  const increment = (key: "yunyum" | "munyum") => {
-    setMirijoonbi((prev) => ({ ...prev, [key]: prev[key] + 1 }));
-  };
-
-  const decrement = (key: "yunyum" | "munyum") => {
-    setMirijoonbi((prev) => ({ ...prev, [key]: Math.max(0, prev[key] - 1) }));
-  };
-
-  // 스와이프 핸들러
   const swipeHandlersYunyum = useSwipeable({
     onSwipedLeft: () => {
       increment("yunyum");
@@ -83,7 +46,7 @@ export default function Mirijoonbi() {
     preventScrollOnSwipe: true,
   });
 
-  // 하이라이트 초기화
+  // 하이라이트 리셋
   useEffect(() => {
     if (highlightedYunyum || highlightedMunyum) {
       const timer = setTimeout(() => {
@@ -98,7 +61,7 @@ export default function Mirijoonbi() {
     <div className="max-w-md mx-auto mt-10 space-y-6">
       <Card>
         <CardContent className="space-y-4 pt-6">
-          <div className="block">미리준비</div>
+          <div className="block font-semibold">미리준비</div>
 
           {/* 유념 */}
           <div {...swipeHandlersYunyum} className="cursor-pointer">
@@ -107,7 +70,7 @@ export default function Mirijoonbi() {
                 highlightedYunyum ? "bg-yellow-100" : ""
               }`}
             >
-              <label className="text-sm font-medium">
+              <label>
                 有念 ({miRiJoonBi.yunyum})
               </label>
               <Button
@@ -120,14 +83,14 @@ export default function Mirijoonbi() {
             </div>
           </div>
 
-          {/* 무념 */}
+          {/* 무念 */}
           <div {...swipeHandlersMunyum} className="cursor-pointer">
             <div
               className={`flex items-center justify-between mt-4 mb-2 ${
                 highlightedMunyum ? "bg-yellow-100" : ""
               }`}
             >
-              <label className="text-sm font-medium">
+              <label>
                 無念 ({miRiJoonBi.munyum})
               </label>
               <Button

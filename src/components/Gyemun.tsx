@@ -153,7 +153,7 @@ export default function Gyemun() {
   });
 
   return (
-    <div className="max-w-md mx-auto mt-10">
+    <div className="w-full max-w-md mx-auto mt-10">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="bo" onClick={() => setActiveTab("bo")}>
