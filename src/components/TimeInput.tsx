@@ -11,7 +11,7 @@ export const EXTRA_ITEMS = [
 
 const getInitialTimes = () => {
   const initial: Record<string, number> = {};
-  EXTRA_ITEMS.forEach(item => initial[item] = 0);
+  EXTRA_ITEMS.forEach(item => (initial[item] = 0));
   return initial;
 };
 
@@ -105,14 +105,20 @@ const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) 
   const studyKeys = ["경전", "법규", "강연"];
   const studyExtra = studyKeys.reduce((sum, key) => sum + (extraTimes[key] || 0), 0);
 
+  const adjust = (item: string, delta: number) => {
+    const base = extraTimes[item] || 0;
+    const newBase = Math.min(Math.max(base + delta, 0), 720);
+    onSliderChange(item, newBase);
+  };
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {EXTRA_ITEMS.map(item => {
         const base = extraTimes[item] || 0;
         const total = item === "학습" ? base + studyExtra : base;
         return (
-          <div key={item} className="rounded-xl bg-white shadow-sm p-4 space-y-2 border border-gray-200">
-            <div className="flex items-center justify-between">
+          <div key={item} className="rounded-xl bg-white shadow-sm p-4 border border-gray-200">
+            <div className="flex justify-between mb-2">
               <Label htmlFor={item} className="text-base font-medium">
                 {item}
               </Label>
@@ -126,14 +132,22 @@ const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) 
               min={0}
               max={item === "학습" ? 720 + studyExtra : 720}
               step={5}
-              value={item === "학습" ? total : base}
+              value={item === "학습" ? base + studyExtra : base}
               onChange={e => {
                 const newTotal = parseInt(e.target.value, 10);
                 const newBase = item === "학습" ? newTotal - studyExtra : newTotal;
                 onSliderChange(item, Math.min(Math.max(newBase, 0), 720));
               }}
-              className="w-full h-8 accent-blue-500"
+              className="w-full h-8 accent-blue-500 mb-3"
             />
+            <div className="flex justify-center space-x-2">
+              <button onClick={() => adjust(item, -60)} className="px-3 py-1 text-sm bg-gray-100 rounded">-1시간</button>
+              <button onClick={() => adjust(item, -10)} className="px-3 py-1 text-sm bg-gray-100 rounded">-10분</button>
+              <button onClick={() => adjust(item, -5)} className="px-3 py-1 text-sm bg-gray-100 rounded">-5분</button>
+              <button onClick={() => adjust(item, 5)} className="px-3 py-1 text-sm bg-gray-100 rounded">+5분</button>
+              <button onClick={() => adjust(item, 10)} className="px-3 py-1 text-sm bg-gray-100 rounded">+10분</button>
+              <button onClick={() => adjust(item, 60)} className="px-3 py-1 text-sm bg-gray-100 rounded">+1시간</button>
+            </div>
           </div>
         );
       })}
