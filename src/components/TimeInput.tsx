@@ -9,6 +9,8 @@ export const EXTRA_ITEMS = [
   "학습", "봉공", "휴식", "수면", "허송"
 ];
 
+const MAX_TOTAL = 24 * 60; // 1440분
+
 const getInitialTimes = () => {
   const initial: Record<string, number> = {};
   EXTRA_ITEMS.forEach(item => (initial[item] = 0));
@@ -31,7 +33,10 @@ interface TableProps {
 const ExtraTimeTable: React.FC<TableProps> = ({ extraTimes, onTableChange }) => {
   const studyKeys = ["경전", "법규", "강연"];
   const studyExtra = studyKeys.reduce((sum, key) => sum + (extraTimes[key] || 0), 0);
-  const totalTime = Object.values(extraTimes).reduce((sum, t) => sum + t, 0);
+  const rawTotal = Object.values(extraTimes).reduce((sum, t) => sum + t, 0);
+  const totalTime = Math.min(rawTotal, MAX_TOTAL);
+  const sleepTime = extraTimes["수면"] || 0;
+  const netTime = Math.max(totalTime - sleepTime, 0);
 
   return (
     <div className="overflow-x-auto">
@@ -62,7 +67,7 @@ const ExtraTimeTable: React.FC<TableProps> = ({ extraTimes, onTableChange }) => 
                     onChange={e => {
                       const newTotal = (parseInt(e.target.value, 10) || 0) * 60 + mins;
                       const newBase = item === "학습" ? newTotal - studyExtra : newTotal;
-                      onTableChange(item, Math.min(Math.max(newBase, 0), 720));
+                      onTableChange(item, newBase);
                     }}
                     className="w-full p-1 border rounded"
                   />
@@ -77,7 +82,7 @@ const ExtraTimeTable: React.FC<TableProps> = ({ extraTimes, onTableChange }) => 
                       const newM = parseInt(e.target.value, 10) || 0;
                       const newTotal = hours * 60 + newM;
                       const newBase = item === "학습" ? newTotal - studyExtra : newTotal;
-                      onTableChange(item, Math.min(Math.max(newBase, 0), 720));
+                      onTableChange(item, newBase);
                     }}
                     className="w-full p-1 border rounded"
                   />
@@ -89,6 +94,10 @@ const ExtraTimeTable: React.FC<TableProps> = ({ extraTimes, onTableChange }) => 
           <tr>
             <td className="border p-2 font-medium" colSpan={3}>전체 합계</td>
             <td className="border p-2 font-medium">{formatTime(totalTime)}</td>
+          </tr>
+          <tr>
+            <td className="border p-2 font-medium" colSpan={3}>전체 합계 - 수면</td>
+            <td className="border p-2 font-medium">{formatTime(netTime)}</td>
           </tr>
         </tbody>
       </table>
@@ -104,21 +113,27 @@ interface SliderProps {
 const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) => {
   const studyKeys = ["경전", "법규", "강연"];
   const studyExtra = studyKeys.reduce((sum, key) => sum + (extraTimes[key] || 0), 0);
+  const rawTotal = Object.values(extraTimes).reduce((sum, t) => sum + t, 0);
+  const totalTime = Math.min(rawTotal, MAX_TOTAL);
+  const sleepTime = extraTimes["수면"] || 0;
+  const netTime = Math.max(totalTime - sleepTime, 0);
 
   const adjust = (item: string, delta: number) => {
     const base = extraTimes[item] || 0;
-    const newBase = Math.min(Math.max(base + delta, 0), 720);
+    const sumExcept = rawTotal - base;
+    const maxBase = Math.min(720, MAX_TOTAL - sumExcept);
+    const newBase = Math.min(Math.max(base + delta, 0), maxBase);
     onSliderChange(item, newBase);
   };
 
   return (
-    <div className="space-y-6">
+    <>
       {EXTRA_ITEMS.map(item => {
         const base = extraTimes[item] || 0;
         const total = item === "학습" ? base + studyExtra : base;
         return (
-          <div key={item} className="rounded-xl bg-white shadow-sm p-4 border border-gray-200">
-            <div className="flex justify-between mb-2">
+          <div key={item} className="rounded-xl bg-white shadow-sm p-4 border border-gray-200 space-y-2">
+            <div className="flex justify-between">
               <Label htmlFor={item} className="text-base font-medium">
                 {item}
               </Label>
@@ -136,9 +151,11 @@ const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) 
               onChange={e => {
                 const newTotal = parseInt(e.target.value, 10);
                 const newBase = item === "학습" ? newTotal - studyExtra : newTotal;
-                onSliderChange(item, Math.min(Math.max(newBase, 0), 720));
+                const sumExcept = rawTotal - base;
+                const clampedBase = Math.min(Math.max(newBase, 0), Math.min(720, MAX_TOTAL - sumExcept));
+                onSliderChange(item, clampedBase);
               }}
-              className="w-full h-8 accent-blue-500 mb-3"
+              className="w-full h-8 accent-blue-500"
             />
             <div className="flex justify-center space-x-2">
               <button onClick={() => adjust(item, -60)} className="px-3 py-1 text-sm bg-gray-100 rounded">-1시간</button>
@@ -151,12 +168,23 @@ const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) 
           </div>
         );
       })}
-    </div>
+      {/* Summary under sliders */}
+      <div className="pt-4 border-t mt-4 space-y-2">
+        <div className="flex justify-between text-sm font-medium">
+          <span>전체 합계</span>
+          <span>{formatTime(totalTime)}</span>
+        </div>
+        <div className="flex justify-between text-sm font-medium">
+          <span>전체 합계 - 수면</span>
+          <span>{formatTime(netTime)}</span>
+        </div>
+      </div>
+    </>
   );
 };
 
 // Main component
-export default function ExtraTimeInputCard() {
+export default function TimeInput() {
   const [extraTimes, setExtraTimes] = useState<Record<string, number>>(getInitialTimes);
   const [tableMode, setTableMode] = useState(false);
 
@@ -176,10 +204,15 @@ export default function ExtraTimeInputCard() {
   }, [tableMode]);
 
   const handleTableChange = (item: string, base: number) => {
-    setExtraTimes(prev => ({ ...prev, [item]: base }));
+    const sumExcept = Object.values(extraTimes).reduce((s, t) => s + t, 0) - (extraTimes[item] || 0);
+    const clamped = Math.min(Math.max(base, 0), Math.min(720, MAX_TOTAL - sumExcept));
+    setExtraTimes(prev => ({ ...prev, [item]: clamped }));
   };
+
   const handleSliderChange = (item: string, base: number) => {
-    setExtraTimes(prev => ({ ...prev, [item]: base }));
+    const sumExcept = Object.values(extraTimes).reduce((s, t) => s + t, 0) - (extraTimes[item] || 0);
+    const clamped = Math.min(Math.max(base, 0), Math.min(720, MAX_TOTAL - sumExcept));
+    setExtraTimes(prev => ({ ...prev, [item]: clamped }));
   };
 
   return (
@@ -190,15 +223,9 @@ export default function ExtraTimeInputCard() {
           <Switch checked={tableMode} onCheckedChange={setTableMode} />
         </div>
         {tableMode ? (
-          <ExtraTimeTable
-            extraTimes={extraTimes}
-            onTableChange={handleTableChange}
-          />
+          <ExtraTimeTable extraTimes={extraTimes} onTableChange={handleTableChange} />
         ) : (
-          <ExtraTimeSlider
-            extraTimes={extraTimes}
-            onSliderChange={handleSliderChange}
-          />
+          <ExtraTimeSlider extraTimes={extraTimes} onSliderChange={handleSliderChange} />
         )}
       </div>
     </div>
