@@ -3,13 +3,16 @@
 import React, { useState, useEffect } from "react";
 import { Label } from "./ui/label";
 import { Switch } from "@/components/ui/switch";
+import { formatTime } from "../lib/utils"
+import { MAX_TOTAL } from "@/constants";
+import { clampTime } from "@/lib/utils"
 
 export const EXTRA_ITEMS = [
   "경전", "법규", "강연", "회화", "의두", "성리", "염불", "좌선", "기도",
   "학습", "봉공", "휴식", "수면", "허송"
 ];
 
-const MAX_TOTAL = 24 * 60; // 1440분
+
 
 const getInitialTimes = (): Record<string, number> => {
   const initial: Record<string, number> = {};
@@ -17,13 +20,8 @@ const getInitialTimes = (): Record<string, number> => {
   return initial;
 };
 
-const formatTime = (minutes: number): string => {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  if (h === 0) return `${m}분`;
-  if (m === 0) return `${h}시간`;
-  return `${h}시간 ${m}분`;
-};
+
+
 
 interface TableProps {
   extraTimes: Record<string, number>;
@@ -42,10 +40,10 @@ const ExtraTimeTable: React.FC<TableProps> = ({ extraTimes, onTableChange }) => 
       <table className="w-full table-auto border-collapse">
         <thead>
           <tr>
-            <th className="border p-2 text-left">항목</th>
-            <th className="border p-2 text-left">시간(시)</th>
-            <th className="border p-2 text-left">시간(분)</th>
-            <th className="border p-2 text-left">총합</th>
+            <th className="border p-2 text-left w-50">항목</th>
+            <th className="border p-2 text-left w-30">시간(시)</th>
+            <th className="border p-2 text-left w-30">시간(분)</th>
+            <th className="border p-2 text-left w-50">총합</th>
           </tr>
         </thead>
         <tbody>
@@ -55,34 +53,32 @@ const ExtraTimeTable: React.FC<TableProps> = ({ extraTimes, onTableChange }) => 
             const hours = Math.floor(total / 60);
             const mins = total % 60;
             return (
-              <tr key={item}>
+              <tr key={item} className="odd:bg-white even:bg-gray-50">
                 <td className="border p-2">{item}</td>
-                <td className="border p-2">
+                <td className="border p-2 w-16">
                   <input
-                    type="number"
-                    min={1}
-                    max={12}
+                    type="text"
+                    inputMode="numeric"
                     value={hours === 0 ? '' : hours}
                     onChange={e => {
-                      const h = Math.max(0, Math.min(99, parseInt(e.target.value, 10) || 0));
+                      const h = parseInt(e.target.value, 10) || 0;
                       const newTotal = h * 60 + mins;
                       const newBase = item === "학습" ? newTotal - studyExtra : newTotal;
-                      onTableChange(item, Math.min(Math.max(newBase, 0), 720));
+                      onTableChange(item, clampTime(item, newBase, extraTimes));
                     }}
                     className="w-full p-1 border rounded"
                   />
                 </td>
-                <td className="border p-2">
+                <td className="border p-2 w-16">
                   <input
-                    type="number"
-                    min={1}
-                    max={59}
+                    type="text"
+                    inputMode="numeric"
                     value={mins === 0 ? '' : mins}
                     onChange={e => {
-                      const m = Math.max(0, Math.min(59, parseInt(e.target.value, 10) || 0));
+                      const m = parseInt(e.target.value, 10) || 0;
                       const newTotal = hours * 60 + m;
                       const newBase = item === "학습" ? newTotal - studyExtra : newTotal;
-                      onTableChange(item, Math.min(Math.max(newBase, 0), 720));
+                      onTableChange(item, clampTime(item, newBase, extraTimes));
                     }}
                     className="w-full p-1 border rounded"
                   />
@@ -119,21 +115,19 @@ const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) 
 
   const adjust = (item: string, delta: number) => {
     const base = extraTimes[item] || 0;
-    const sumExcept = rawTotal - base;
-    const maxBase = Math.min(720, MAX_TOTAL - sumExcept);
-    const newBase = Math.min(Math.max(base + delta, 0), maxBase);
+    const newBase = clampTime(item, base + delta, extraTimes);
     onSliderChange(item, newBase);
   };
 
   return (
-    <>
+    <div className="space-y-4">
       {EXTRA_ITEMS.map(item => {
         const base = extraTimes[item] || 0;
         const total = item === "학습" ? base + studyExtra : base;
         return (
-          <div key={item} className="rounded-xl bg-white shadow-sm p-4 border border-gray-200 space-y-2">
-            <div className="flex justify-between">
-              <Label htmlFor={item} className="text-base font-medium">{item}</Label>
+          <div key={item} className="rounded-xl bg-white shadow-sm p-4 border border-gray-200">
+            <div className="flex justify-between mb-2">
+              <Label className="text-base font-medium">{item}</Label>
               <span className="text-sm text-muted-foreground">{formatTime(total)}</span>
             </div>
             <input
@@ -143,13 +137,7 @@ const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) 
               max={item === "학습" ? 720 + studyExtra : 720}
               step={5}
               value={item === "학습" ? base + studyExtra : base}
-              onChange={e => {
-                const newTotal = parseInt(e.target.value, 10);
-                const newBase = item === "학습" ? newTotal - studyExtra : newTotal;
-                const sumExcept = rawTotal - base;
-                const clampedBase = Math.min(Math.max(newBase, 0), Math.min(720, MAX_TOTAL - sumExcept));
-                onSliderChange(item, clampedBase);
-              }}
+              onChange={e => adjust(item, parseInt(e.target.value, 10))}
               className="w-full h-8 accent-blue-500"
             />
             <div className="flex justify-center space-x-2">
@@ -167,12 +155,12 @@ const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) 
         <div className="flex justify-between text-sm font-medium"><span>전체 합계</span><span>{formatTime(totalTime)}</span></div>
         <div className="flex justify-between text-sm font-medium"><span>전체 합계 - 수면</span><span>{formatTime(netTime)}</span></div>
       </div>
-    </>
+    </div>
   );
 };
 
 export default function TimeInput() {
-  const [extraTimes, setExtraTimes] = useState<Record<string, number>>(getInitialTimes);
+  const [extraTimes, setExtraTimes] = useState<Record<string, number>>(getInitialTimes());
   const [tableMode, setTableMode] = useState(false);
 
   useEffect(() => {
@@ -186,22 +174,20 @@ export default function TimeInput() {
   useEffect(() => { localStorage.setItem("tableMode", JSON.stringify(tableMode)); }, [tableMode]);
 
   const handleTableChange = (item: string, base: number) => {
-    const sumExcept = Object.values(extraTimes).reduce((s, t) => s + t, 0) - (extraTimes[item] || 0);
-    const clamped = Math.min(Math.max(base, 0), Math.min(720, MAX_TOTAL - sumExcept));
-    setExtraTimes(prev => ({ ...prev, [item]: clamped }));
+    const newBase = clampTime(item, base, extraTimes);
+    setExtraTimes(prev => ({ ...prev, [item]: newBase }));
   };
 
   const handleSliderChange = (item: string, base: number) => {
-    const sumExcept = Object.values(extraTimes).reduce((s, t) => s + t, 0) - (extraTimes[item] || 0);
-    const clamped = Math.min(Math.max(base, 0), Math.min(720, MAX_TOTAL - sumExcept));
-    setExtraTimes(prev => ({ ...prev, [item]: clamped }));
+    const newBase = clampTime(item, base, extraTimes);
+    setExtraTimes(prev => ({ ...prev, [item]: newBase }));
   };
 
   return (
     <div className="w-full px-4 py-6 space-y-6">
       <div className="max-w-md mx-auto space-y-6">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">표에서 입력 모드</span>
+          <Label className="text-sm font-medium">표에서 입력 모드</Label>
           <Switch checked={tableMode} onCheckedChange={setTableMode} />
         </div>
         {tableMode ? (
