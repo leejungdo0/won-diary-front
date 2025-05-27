@@ -11,13 +11,13 @@ export const EXTRA_ITEMS = [
 
 const MAX_TOTAL = 24 * 60; // 1440분
 
-const getInitialTimes = () => {
+const getInitialTimes = (): Record<string, number> => {
   const initial: Record<string, number> = {};
-  EXTRA_ITEMS.forEach(item => (initial[item] = 0));
+  EXTRA_ITEMS.forEach(item => { initial[item] = 0; });
   return initial;
 };
 
-const formatTime = (minutes: number) => {
+const formatTime = (minutes: number): string => {
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
   if (h === 0) return `${m}분`;
@@ -25,7 +25,6 @@ const formatTime = (minutes: number) => {
   return `${h}시간 ${m}분`;
 };
 
-// Table mode component
 interface TableProps {
   extraTimes: Record<string, number>;
   onTableChange: (item: string, total: number) => void;
@@ -61,13 +60,14 @@ const ExtraTimeTable: React.FC<TableProps> = ({ extraTimes, onTableChange }) => 
                 <td className="border p-2">
                   <input
                     type="number"
-                    min={0}
+                    min={1}
                     max={12}
-                    value={hours}
+                    value={hours === 0 ? '' : hours}
                     onChange={e => {
-                      const newTotal = (parseInt(e.target.value, 10) || 0) * 60 + mins;
+                      const h = Math.max(0, Math.min(99, parseInt(e.target.value, 10) || 0));
+                      const newTotal = h * 60 + mins;
                       const newBase = item === "학습" ? newTotal - studyExtra : newTotal;
-                      onTableChange(item, newBase);
+                      onTableChange(item, Math.min(Math.max(newBase, 0), 720));
                     }}
                     className="w-full p-1 border rounded"
                   />
@@ -75,14 +75,14 @@ const ExtraTimeTable: React.FC<TableProps> = ({ extraTimes, onTableChange }) => 
                 <td className="border p-2">
                   <input
                     type="number"
-                    min={0}
+                    min={1}
                     max={59}
-                    value={mins}
+                    value={mins === 0 ? '' : mins}
                     onChange={e => {
-                      const newM = parseInt(e.target.value, 10) || 0;
-                      const newTotal = hours * 60 + newM;
+                      const m = Math.max(0, Math.min(59, parseInt(e.target.value, 10) || 0));
+                      const newTotal = hours * 60 + m;
                       const newBase = item === "학습" ? newTotal - studyExtra : newTotal;
-                      onTableChange(item, newBase);
+                      onTableChange(item, Math.min(Math.max(newBase, 0), 720));
                     }}
                     className="w-full p-1 border rounded"
                   />
@@ -105,7 +105,6 @@ const ExtraTimeTable: React.FC<TableProps> = ({ extraTimes, onTableChange }) => 
   );
 };
 
-// Slider mode component
 interface SliderProps {
   extraTimes: Record<string, number>;
   onSliderChange: (item: string, total: number) => void;
@@ -134,12 +133,8 @@ const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) 
         return (
           <div key={item} className="rounded-xl bg-white shadow-sm p-4 border border-gray-200 space-y-2">
             <div className="flex justify-between">
-              <Label htmlFor={item} className="text-base font-medium">
-                {item}
-              </Label>
-              <span className="text-sm text-muted-foreground">
-                {formatTime(total)}
-              </span>
+              <Label htmlFor={item} className="text-base font-medium">{item}</Label>
+              <span className="text-sm text-muted-foreground">{formatTime(total)}</span>
             </div>
             <input
               id={item}
@@ -168,22 +163,14 @@ const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) 
           </div>
         );
       })}
-      {/* Summary under sliders */}
       <div className="pt-4 border-t mt-4 space-y-2">
-        <div className="flex justify-between text-sm font-medium">
-          <span>전체 합계</span>
-          <span>{formatTime(totalTime)}</span>
-        </div>
-        <div className="flex justify-between text-sm font-medium">
-          <span>전체 합계 - 수면</span>
-          <span>{formatTime(netTime)}</span>
-        </div>
+        <div className="flex justify-between text-sm font-medium"><span>전체 합계</span><span>{formatTime(totalTime)}</span></div>
+        <div className="flex justify-between text-sm font-medium"><span>전체 합계 - 수면</span><span>{formatTime(netTime)}</span></div>
       </div>
     </>
   );
 };
 
-// Main component
 export default function TimeInput() {
   const [extraTimes, setExtraTimes] = useState<Record<string, number>>(getInitialTimes);
   const [tableMode, setTableMode] = useState(false);
@@ -195,13 +182,8 @@ export default function TimeInput() {
     if (mode) setTableMode(JSON.parse(mode));
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("extraTimes", JSON.stringify(extraTimes));
-  }, [extraTimes]);
-
-  useEffect(() => {
-    localStorage.setItem("tableMode", JSON.stringify(tableMode));
-  }, [tableMode]);
+  useEffect(() => { localStorage.setItem("extraTimes", JSON.stringify(extraTimes)); }, [extraTimes]);
+  useEffect(() => { localStorage.setItem("tableMode", JSON.stringify(tableMode)); }, [tableMode]);
 
   const handleTableChange = (item: string, base: number) => {
     const sumExcept = Object.values(extraTimes).reduce((s, t) => s + t, 0) - (extraTimes[item] || 0);
