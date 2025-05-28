@@ -4,13 +4,12 @@ import Gyemun from "@/components/Gyemun";
 import MirijoonbiWrapper from "@/components/MirijoonbiWrapper";
 import ResetLocalStorageButton from "@/components/ResetLocalStorageButton";
 import TimeInput from "@/components/TimeInput";
+import { getTodayDateString } from "@/lib/utils";
 import { useEffect } from "react";
 
 
 
-export default function Home() {
-  const getTodayDateString = () => new Date().toISOString().split("T")[0];
-  
+export default function Home() { 
   // reset localStorage if today is a new day  
   useEffect(() => {
         if (typeof window === "undefined") return;

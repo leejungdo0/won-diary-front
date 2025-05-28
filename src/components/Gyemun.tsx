@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { format } from "date-fns";
 import { useSwipeable } from "react-swipeable";
+import { getTodayDateString } from "@/lib/utils";
 
 const BO_TONG_GUP_ITEMS = [
   "연고살생", "도둑질", "간음", "연고음주", "잡기", "악한 말", "연고쟁투", "공금범용", "금전여수", "연고흡연",
@@ -20,8 +21,6 @@ const beopma_SANGJEONG_ITEMS = [
 ];
 
 export default function Gyemun() {
-  const getTodayDateString = () => new Date().toISOString().split("T")[0];
-
   useEffect(() => {
     if (typeof window === "undefined") return;
     const lastClearDate = localStorage.getItem("lastClearDate");

@@ -20,3 +20,5 @@ export const clampTime = (item: string, base: number, extraTimes: Record<string,
   const maxBase = Math.min(720, MAX_TOTAL - sumExcept);
   return Math.min(Math.max(base, 0), maxBase);
 };
+
+export const getTodayDateString = () => new Date().toISOString().split("T")[0];
