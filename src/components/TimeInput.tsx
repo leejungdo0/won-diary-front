@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Label } from "./ui/label";
 import { Switch } from "@/components/ui/switch";
-import { formatTime } from "../lib/utils"
+import { formatTime, getTodayDateString } from "../lib/utils"
 import { MAX_TOTAL } from "@/constants";
 import { clampTime } from "@/lib/utils"
 
@@ -12,16 +12,11 @@ export const EXTRA_ITEMS = [
   "학습", "봉공", "휴식", "수면", "허송"
 ];
 
-
-
 const getInitialTimes = (): Record<string, number> => {
   const initial: Record<string, number> = {};
   EXTRA_ITEMS.forEach(item => { initial[item] = 0; });
   return initial;
 };
-
-
-
 
 interface TableProps {
   extraTimes: Record<string, number>;
@@ -160,6 +155,16 @@ const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) 
 };
 
 export default function TimeInput() {
+  useEffect(() => {
+      if (typeof window === "undefined") return;
+      const lastClearDate = localStorage.getItem("lastClearDate");
+      const today = getTodayDateString();
+      if (lastClearDate !== today) {   
+        localStorage.removeItem('extraTimes');
+        localStorage.setItem("lastClearDate", today);
+      }
+    }, []);
+
   const [extraTimes, setExtraTimes] = useState<Record<string, number>>(getInitialTimes());
   const [tableMode, setTableMode] = useState(false);
 
