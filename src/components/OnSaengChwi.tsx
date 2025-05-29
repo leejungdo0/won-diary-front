@@ -82,8 +82,9 @@ export default function OnSaengChwi({ synced }: { synced: { yunyum: number; muny
           {/* 유념 */}
           <div {...swipeHandlersYunyum} className="cursor-pointer">
             <div
-              className={`flex items-center justify-between mb-2 ${highlightedYunyum ? "bg-yellow-100" : ""
-                }`}
+              className={`flex items-center justify-between mb-2 ${
+                highlightedYunyum ? "bg-yellow-100" : ""
+              }`}
             >
               <label>有念 ({onSaengchwi.yunyum})</label>
               <Button variant="outline" size="icon" onClick={() => increment("yunyum")}>
@@ -95,8 +96,9 @@ export default function OnSaengChwi({ synced }: { synced: { yunyum: number; muny
           {/* 무념 */}
           <div {...swipeHandlersMunyum} className="cursor-pointer">
             <div
-              className={`flex items-center justify-between mt-4 mb-2 ${highlightedMunyum ? "bg-yellow-100" : ""
-                }`}
+              className={`flex items-center justify-between mt-4 mb-2 ${
+                highlightedMunyum ? "bg-yellow-100" : ""
+              }`}
             >
               <label>無念 ({onSaengchwi.munyum})</label>
               <Button variant="outline" size="icon" onClick={() => increment("munyum")}>

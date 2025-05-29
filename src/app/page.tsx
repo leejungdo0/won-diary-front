@@ -1,6 +1,6 @@
 "use client";
 
-import Gyemun from "@/components/Gyemun";
+import GyeMoon from "@/components/GyeMoon";
 import MirijoonbiWrapper from "@/components/MirijoonbiWrapper";
 import ResetLocalStorageButton from "@/components/ResetLocalStorageButton";
 import TimeInput from "@/components/TimeInput";
@@ -25,7 +25,7 @@ export default function Home() {
       <div className="block italic">- work in progress -</div>
       <MirijoonbiWrapper />
       <TimeInput />
-      <Gyemun />
+      <GyeMoon />
       <ResetLocalStorageButton />
     </main>
   );

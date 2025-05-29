@@ -93,9 +93,15 @@ export const TabsComponent = () => {
     <div {...swipeHandlers} className="w-full">
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
-          <TabsTrigger value="bo" onClick={() => setActiveTab("bo")}>보통급</TabsTrigger>
-          <TabsTrigger value="tuk" onClick={() => setActiveTab("tuk")}>특신급</TabsTrigger>
-          <TabsTrigger value="법마상전급" onClick={() => setActiveTab("법마상전급")}>법마상전급</TabsTrigger>
+          <TabsTrigger value="bo" onClick={() => setActiveTab("bo")}>
+            보통급
+          </TabsTrigger>
+          <TabsTrigger value="tuk" onClick={() => setActiveTab("tuk")}>
+            특신급
+          </TabsTrigger>
+          <TabsTrigger value="법마상전급" onClick={() => setActiveTab("법마상전급")}>
+            법마상전급
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="bo">

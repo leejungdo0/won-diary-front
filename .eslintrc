@@ -5,9 +5,9 @@
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
-    // 필요시 Prettier 연동
-    "prettier"
+    "plugin:@typescript-eslint/recommended",  
+    "prettier",                   // ❶ eslint 룰 중 Prettier와 충돌나는 것 끔
+    "plugin:prettier/recommended" // ❷ `prettier/prettier` 룰 자동 활성화
   ],
   "plugins": ["react", "@typescript-eslint"],
   "settings": {
