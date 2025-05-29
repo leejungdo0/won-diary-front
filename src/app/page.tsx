@@ -6,6 +6,8 @@ import ResetLocalStorageButton from "@/components/ResetLocalStorageButton";
 import TimeInput from "@/components/TimeInput";
 import { getTodayDateString } from "@/lib/utils";
 import { useEffect } from "react";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Analytics } from "@vercel/analytics/next";
 
 export default function Home() {
   // reset localStorage if today is a new day
