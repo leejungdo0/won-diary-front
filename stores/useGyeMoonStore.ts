@@ -1,4 +1,3 @@
-// stores/useGyeMoonStore.ts
 import {
   BeopMaSangJeonGeupCounts,
   BeopMaSangJeonGeupItem,
@@ -30,15 +29,25 @@ type GyeMoonState = {
   reset: () => void;
 };
 
+const initial_BOTONG_ITEMS = BOTONG_ITEMS.reduce(
+  (acc, k) => ({ ...acc, [k]: 0 }),
+  {} as BoTongGeupCounts
+);
+const initial_TEUKSIK_ITEMS = TEUKSIN_ITEMS.reduce(
+  (acc, k) => ({ ...acc, [k]: 0 }),
+  {} as TeukSinGeupCounts
+);
+const initial_BEOPMA_ITEMS = BEOPMA_ITEMS.reduce(
+  (acc, k) => ({ ...acc, [k]: 0 }),
+  {} as BeopMaSangJeonGeupCounts
+);
+
 export const useGyeMoonStore = create<GyeMoonState>()(
   persist(
     set => ({
-      boTongGeup: BOTONG_ITEMS.reduce((acc, k) => ({ ...acc, [k]: 0 }), {} as BoTongGeupCounts),
-      teukSinGeup: TEUKSIN_ITEMS.reduce((acc, k) => ({ ...acc, [k]: 0 }), {} as TeukSinGeupCounts),
-      beopMaSangJeonGeup: BEOPMA_ITEMS.reduce(
-        (acc, k) => ({ ...acc, [k]: 0 }),
-        {} as BeopMaSangJeonGeupCounts
-      ),
+      boTongGeup: initial_BOTONG_ITEMS,
+      teukSinGeup: initial_TEUKSIK_ITEMS,
+      beopMaSangJeonGeup: initial_BEOPMA_ITEMS,
 
       setBoTongCount: (name, count) =>
         set(s => ({ boTongGeup: { ...s.boTongGeup, [name]: count } })),
@@ -53,15 +62,9 @@ export const useGyeMoonStore = create<GyeMoonState>()(
 
       reset: () =>
         set({
-          boTongGeup: BOTONG_ITEMS.reduce((acc, k) => ({ ...acc, [k]: 0 }), {} as BoTongGeupCounts),
-          teukSinGeup: TEUKSIN_ITEMS.reduce(
-            (acc, k) => ({ ...acc, [k]: 0 }),
-            {} as TeukSinGeupCounts
-          ),
-          beopMaSangJeonGeup: BEOPMA_ITEMS.reduce(
-            (acc, k) => ({ ...acc, [k]: 0 }),
-            {} as BeopMaSangJeonGeupCounts
-          ),
+          boTongGeup: initial_BOTONG_ITEMS,
+          teukSinGeup: initial_TEUKSIK_ITEMS,
+          beopMaSangJeonGeup: initial_BEOPMA_ITEMS,
         }),
     }),
     {

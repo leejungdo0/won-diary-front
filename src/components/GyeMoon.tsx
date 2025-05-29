@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import {
   BEOP_MA_SANG_JEON_GEUP_ITEMS,
 } from "@/types";
 import { useGyeMoonStore } from "stores/useGyeMoonStore";
+import { useUserDataStore } from "stores/useUserDataStore";
 
 export default function GyeMoon() {
   const boTong = useGyeMoonStore(s => s.boTongGeup);
@@ -27,17 +28,17 @@ export default function GyeMoon() {
   const setTeukSin = useGyeMoonStore(s => s.setTeukSinCount);
   const setBeopMa = useGyeMoonStore(s => s.setBeopMaCount);
   const resetAll = useGyeMoonStore(s => s.reset);
-
-  const [activeTab, setActiveTab] = useState<"bo" | "tuk" | "beopma">("bo");
+  const lastOpenTab = useUserDataStore(s => s.settings.lastOpenTab);
+  const setLastOpenTab = useUserDataStore(s => s.setLastOpenTab);
 
   const swipeHandlers: SwipeableHandlers = useSwipeable({
     onSwipedLeft: () => {
-      if (activeTab === "bo") setActiveTab("tuk");
-      else if (activeTab === "tuk") setActiveTab("beopma");
+      if (lastOpenTab === "bo") setLastOpenTab("tuk");
+      else if (lastOpenTab === "tuk") setLastOpenTab("beopma");
     },
     onSwipedRight: () => {
-      if (activeTab === "beopma") setActiveTab("tuk");
-      else if (activeTab === "tuk") setActiveTab("bo");
+      if (lastOpenTab === "beopma") setLastOpenTab("tuk");
+      else if (lastOpenTab === "tuk") setLastOpenTab("bo");
     },
     trackTouch: true,
     trackMouse: true,
@@ -53,8 +54,8 @@ export default function GyeMoon() {
       </div>
 
       <Tabs
-        value={activeTab}
-        onValueChange={value => setActiveTab(value as "bo" | "tuk" | "beopma")}
+        value={lastOpenTab}
+        onValueChange={value => setLastOpenTab(value as "bo" | "tuk" | "beopma")}
         className="w-full"
       >
         <TabsList className="grid w-full grid-cols-3">

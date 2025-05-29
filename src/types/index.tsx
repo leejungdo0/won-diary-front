@@ -1,11 +1,11 @@
-// 최상위 인터페이스
-export interface DefaultUserData {
+export interface UserData {
   date: string; // "YYYY-MM-DD" 형태의 날짜
   settings: UserSettings; // 사용자 설정
-  sangSiIlGi: SangSiIlGi; // 상시일기
-  gyoDangNaeWang: GyoDangNaeWang; // 교당내왕시주의사항
-  gyemoon: GyeMoon; // 계문
-  jakEopSiGan: JakEopSiGan; // 작업시간
+}
+
+export interface UserSettings {
+  isTableMode: boolean; // 테이블 모드 여부
+  lastOpenTab: "bo" | "tuk" | "beopma"; // 마지막으로 열린 탭
 }
 
 // 상시일기 부분
@@ -202,8 +202,4 @@ export interface GyeMoon {
   boTongGeup: BoTongGeupCounts[];
   teukSinGeup: TeukSinGeupCounts[];
   beopMaSangJeonGeup: BeopMaSangJeonGeupCounts[];
-}
-
-export interface UserSettings {
-  isTableMode: boolean; // 테이블 모드 여부
 }
