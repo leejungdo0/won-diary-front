@@ -115,7 +115,7 @@ const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) 
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 max-h-[70vh] overflow-y-auto">
       {EXTRA_ITEMS.map(item => {
         const base = extraTimes[item] || 0;
         const total = item === "학습" ? base + studyExtra : base;
