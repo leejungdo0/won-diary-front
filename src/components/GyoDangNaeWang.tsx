@@ -20,8 +20,8 @@ export default function GyoDangNaeWang({
 }) {
   return (
     <div className="max-w-md mx-auto space-y-6">
-      <Card >
-      {sections.map((section, index) => (
+      <Card>
+        {sections.map((section, index) => (
           <CardContent key={section.title} className="pt-6 space-y-3">
             <div className="font-semibold">{section.title}</div>
             <div className="flex items-center justify-between">
@@ -45,8 +45,7 @@ export default function GyoDangNaeWang({
               </Button>
             </div>
           </CardContent>
-        
-      ))}
+        ))}
       </Card>
     </div>
   );

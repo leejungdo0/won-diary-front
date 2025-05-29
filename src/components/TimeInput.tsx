@@ -3,18 +3,32 @@
 import React, { useState, useEffect } from "react";
 import { Label } from "./ui/label";
 import { Switch } from "@/components/ui/switch";
-import { formatTime, getTodayDateString } from "../lib/utils"
+import { formatTime, getTodayDateString } from "../lib/utils";
 import { MAX_TOTAL } from "@/constants";
-import { clampTime } from "@/lib/utils"
+import { clampTime } from "@/lib/utils";
 
 export const EXTRA_ITEMS = [
-  "경전", "법규", "강연", "회화", "의두", "성리", "염불", "좌선", "기도",
-  "학습", "봉공", "휴식", "수면", "허송"
+  "경전",
+  "법규",
+  "강연",
+  "회화",
+  "의두",
+  "성리",
+  "염불",
+  "좌선",
+  "기도",
+  "학습",
+  "봉공",
+  "휴식",
+  "수면",
+  "허송",
 ];
 
 const getInitialTimes = (): Record<string, number> => {
   const initial: Record<string, number> = {};
-  EXTRA_ITEMS.forEach(item => { initial[item] = 0; });
+  EXTRA_ITEMS.forEach(item => {
+    initial[item] = 0;
+  });
   return initial;
 };
 
@@ -54,7 +68,7 @@ const ExtraTimeTable: React.FC<TableProps> = ({ extraTimes, onTableChange }) => 
                   <input
                     type="text"
                     inputMode="numeric"
-                    value={hours === 0 ? '' : hours}
+                    value={hours === 0 ? "" : hours}
                     onChange={e => {
                       const h = parseInt(e.target.value, 10) || 0;
                       const newTotal = h * 60 + mins;
@@ -68,7 +82,7 @@ const ExtraTimeTable: React.FC<TableProps> = ({ extraTimes, onTableChange }) => 
                   <input
                     type="text"
                     inputMode="numeric"
-                    value={mins === 0 ? '' : mins}
+                    value={mins === 0 ? "" : mins}
                     onChange={e => {
                       const m = parseInt(e.target.value, 10) || 0;
                       const newTotal = hours * 60 + m;
@@ -83,11 +97,15 @@ const ExtraTimeTable: React.FC<TableProps> = ({ extraTimes, onTableChange }) => 
             );
           })}
           <tr>
-            <td className="border p-2 font-medium" colSpan={3}>전체 합계</td>
+            <td className="border p-2 font-medium" colSpan={3}>
+              전체 합계
+            </td>
             <td className="border p-2 font-medium">{formatTime(totalTime)}</td>
           </tr>
           <tr>
-            <td className="border p-2 font-medium" colSpan={3}>전체 합계 - 수면</td>
+            <td className="border p-2 font-medium" colSpan={3}>
+              전체 합계 - 수면
+            </td>
             <td className="border p-2 font-medium">{formatTime(netTime)}</td>
           </tr>
         </tbody>
@@ -136,19 +154,55 @@ const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) 
               className="w-full h-8 accent-blue-500"
             />
             <div className="flex justify-center space-x-2">
-              <button onClick={() => adjust(item, -60)} className="px-3 py-1 text-sm bg-gray-100 rounded">-1시간</button>
-              <button onClick={() => adjust(item, -10)} className="px-3 py-1 text-sm bg-gray-100 rounded">-10분</button>
-              <button onClick={() => adjust(item, -5)} className="px-3 py-1 text-sm bg-gray-100 rounded">-5분</button>
-              <button onClick={() => adjust(item, 5)} className="px-3 py-1 text-sm bg-gray-100 rounded">+5분</button>
-              <button onClick={() => adjust(item, 10)} className="px-3 py-1 text-sm bg-gray-100 rounded">+10분</button>
-              <button onClick={() => adjust(item, 60)} className="px-3 py-1 text-sm bg-gray-100 rounded">+1시간</button>
+              <button
+                onClick={() => adjust(item, -60)}
+                className="px-3 py-1 text-sm bg-gray-100 rounded"
+              >
+                -1시간
+              </button>
+              <button
+                onClick={() => adjust(item, -10)}
+                className="px-3 py-1 text-sm bg-gray-100 rounded"
+              >
+                -10분
+              </button>
+              <button
+                onClick={() => adjust(item, -5)}
+                className="px-3 py-1 text-sm bg-gray-100 rounded"
+              >
+                -5분
+              </button>
+              <button
+                onClick={() => adjust(item, 5)}
+                className="px-3 py-1 text-sm bg-gray-100 rounded"
+              >
+                +5분
+              </button>
+              <button
+                onClick={() => adjust(item, 10)}
+                className="px-3 py-1 text-sm bg-gray-100 rounded"
+              >
+                +10분
+              </button>
+              <button
+                onClick={() => adjust(item, 60)}
+                className="px-3 py-1 text-sm bg-gray-100 rounded"
+              >
+                +1시간
+              </button>
             </div>
           </div>
         );
       })}
       <div className="pt-4 border-t mt-4 space-y-2">
-        <div className="flex justify-between text-sm font-medium"><span>전체 합계</span><span>{formatTime(totalTime)}</span></div>
-        <div className="flex justify-between text-sm font-medium"><span>전체 합계 - 수면</span><span>{formatTime(netTime)}</span></div>
+        <div className="flex justify-between text-sm font-medium">
+          <span>전체 합계</span>
+          <span>{formatTime(totalTime)}</span>
+        </div>
+        <div className="flex justify-between text-sm font-medium">
+          <span>전체 합계 - 수면</span>
+          <span>{formatTime(netTime)}</span>
+        </div>
       </div>
     </div>
   );
@@ -156,14 +210,14 @@ const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) 
 
 export default function TimeInput() {
   useEffect(() => {
-      if (typeof window === "undefined") return;
-      const lastClearDate = localStorage.getItem("lastClearDate");
-      const today = getTodayDateString();
-      if (lastClearDate !== today) {   
-        localStorage.removeItem('extraTimes');
-        localStorage.setItem("lastClearDate", today);
-      }
-    }, []);
+    if (typeof window === "undefined") return;
+    const lastClearDate = localStorage.getItem("lastClearDate");
+    const today = getTodayDateString();
+    if (lastClearDate !== today) {
+      localStorage.removeItem("extraTimes");
+      localStorage.setItem("lastClearDate", today);
+    }
+  }, []);
 
   const [extraTimes, setExtraTimes] = useState<Record<string, number>>(getInitialTimes());
   const [tableMode, setTableMode] = useState(false);
@@ -175,8 +229,12 @@ export default function TimeInput() {
     if (mode) setTableMode(JSON.parse(mode));
   }, []);
 
-  useEffect(() => { localStorage.setItem("extraTimes", JSON.stringify(extraTimes)); }, [extraTimes]);
-  useEffect(() => { localStorage.setItem("tableMode", JSON.stringify(tableMode)); }, [tableMode]);
+  useEffect(() => {
+    localStorage.setItem("extraTimes", JSON.stringify(extraTimes));
+  }, [extraTimes]);
+  useEffect(() => {
+    localStorage.setItem("tableMode", JSON.stringify(tableMode));
+  }, [tableMode]);
 
   const handleTableChange = (item: string, base: number) => {
     const newBase = clampTime(item, base, extraTimes);

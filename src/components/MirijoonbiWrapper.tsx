@@ -55,18 +55,16 @@ export default function MirijoonbiWrapper() {
   }, [team, date]);
 
   const increment = (key: keyof CountState) => {
-    setMirijoonbi((prev) => ({ ...prev, [key]: prev[key] + 1 }));
+    setMirijoonbi(prev => ({ ...prev, [key]: prev[key] + 1 }));
   };
 
   const decrement = (key: keyof CountState) => {
-    setMirijoonbi((prev) => ({ ...prev, [key]: Math.max(0, prev[key] - 1) }));
+    setMirijoonbi(prev => ({ ...prev, [key]: Math.max(0, prev[key] - 1) }));
   };
 
   const incrementGyo = (index: number, type: keyof CountState) => {
-    setGyoDangData((prev) =>
-      prev.map((item, i) =>
-        i === index ? { ...item, [type]: item[type] + 1 } : item
-      )
+    setGyoDangData(prev =>
+      prev.map((item, i) => (i === index ? { ...item, [type]: item[type] + 1 } : item))
     );
   };
 
@@ -88,16 +86,9 @@ export default function MirijoonbiWrapper() {
     <div className="w-full mx-auto mt-10 space-y-6">
       <OnSaengChwi synced={synced} />
 
-      <Mirijoonbi
-        miRiJoonBi={miRiJoonBi}
-        increment={increment}
-        decrement={decrement}
-      />
+      <Mirijoonbi miRiJoonBi={miRiJoonBi} increment={increment} decrement={decrement} />
 
-      <GyoDangNaeWang
-        sections={gyoDangData}
-        handleIncrement={incrementGyo}
-      />
+      <GyoDangNaeWang sections={gyoDangData} handleIncrement={incrementGyo} />
     </div>
   );
 }

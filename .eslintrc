@@ -1,0 +1,21 @@
+
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    // 필요시 Prettier 연동
+    "prettier"
+  ],
+  "plugins": ["react", "@typescript-eslint"],
+  "settings": {
+    "react": { "version": "detect" }
+  },
+  "rules": {
+    // 커스텀 룰
+    "no-console": "warn",
+    "react/react-in-jsx-scope": "off"
+  }
+}

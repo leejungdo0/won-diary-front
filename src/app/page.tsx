@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Gyemun from "@/components/Gyemun";
 import MirijoonbiWrapper from "@/components/MirijoonbiWrapper";
@@ -7,19 +7,17 @@ import TimeInput from "@/components/TimeInput";
 import { getTodayDateString } from "@/lib/utils";
 import { useEffect } from "react";
 
-
-
-export default function Home() { 
-  // reset localStorage if today is a new day  
+export default function Home() {
+  // reset localStorage if today is a new day
   useEffect(() => {
-        if (typeof window === "undefined") return;
-        const lastClearDate = localStorage.getItem("lastClearDate");
-        const today = getTodayDateString();
-        if (lastClearDate !== today) {
-          localStorage.clear();
-          localStorage.setItem("lastClearDate", today);
-        }
-      }, []);
+    if (typeof window === "undefined") return;
+    const lastClearDate = localStorage.getItem("lastClearDate");
+    const today = getTodayDateString();
+    if (lastClearDate !== today) {
+      localStorage.clear();
+      localStorage.setItem("lastClearDate", today);
+    }
+  }, []);
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-4 space-y-8">

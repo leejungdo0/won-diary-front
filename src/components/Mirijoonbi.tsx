@@ -66,18 +66,11 @@ export default function Mirijoonbi({
           {/* 유념 */}
           <div {...swipeHandlersYunyum} className="cursor-pointer">
             <div
-              className={`flex items-center justify-between mb-2 ${
-                highlightedYunyum ? "bg-yellow-100" : ""
-              }`}
+              className={`flex items-center justify-between mb-2 ${highlightedYunyum ? "bg-yellow-100" : ""
+                }`}
             >
-              <label>
-                有念 ({miRiJoonBi.yunyum})
-              </label>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => increment("yunyum")}
-              >
+              <label>有念 ({miRiJoonBi.yunyum})</label>
+              <Button variant="outline" size="icon" onClick={() => increment("yunyum")}>
                 <PlusIcon className="h-4 w-4 text-green-600" />
               </Button>
             </div>
@@ -86,18 +79,11 @@ export default function Mirijoonbi({
           {/* 무念 */}
           <div {...swipeHandlersMunyum} className="cursor-pointer">
             <div
-              className={`flex items-center justify-between mt-4 mb-2 ${
-                highlightedMunyum ? "bg-yellow-100" : ""
-              }`}
+              className={`flex items-center justify-between mt-4 mb-2 ${highlightedMunyum ? "bg-yellow-100" : ""
+                }`}
             >
-              <label>
-                無念 ({miRiJoonBi.munyum})
-              </label>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => increment("munyum")}
-              >
+              <label>無念 ({miRiJoonBi.munyum})</label>
+              <Button variant="outline" size="icon" onClick={() => increment("munyum")}>
                 <PlusIcon className="h-4 w-4 text-green-600" />
               </Button>
             </div>

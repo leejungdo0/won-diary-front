@@ -8,11 +8,7 @@ import { PlusIcon } from "@radix-ui/react-icons";
 import { useSwipeable } from "react-swipeable";
 import { format } from "date-fns";
 
-export default function OnSaengChwi({
-  synced,
-}: {
-  synced: { yunyum: number; munyum: number };
-}) {
+export default function OnSaengChwi({ synced }: { synced: { yunyum: number; munyum: number } }) {
   const today = format(new Date(), "yyyy-MM-dd");
   const [onSaengchwi, setOnSaengchwi] = useState({ yunyum: 0, munyum: 0 });
   const [highlightedYunyum, setHighlightedYunyum] = useState(false);
@@ -31,11 +27,11 @@ export default function OnSaengChwi({
   }, [onSaengchwi, today]);
 
   const increment = (key: "yunyum" | "munyum") => {
-    setOnSaengchwi((prev) => ({ ...prev, [key]: prev[key] + 1 }));
+    setOnSaengchwi(prev => ({ ...prev, [key]: prev[key] + 1 }));
   };
 
   const decrement = (key: "yunyum" | "munyum") => {
-    setOnSaengchwi((prev) => ({ ...prev, [key]: Math.max(0, prev[key] - 1) }));
+    setOnSaengchwi(prev => ({ ...prev, [key]: Math.max(0, prev[key] - 1) }));
   };
 
   const swipeHandlersYunyum = useSwipeable({
@@ -86,18 +82,11 @@ export default function OnSaengChwi({
           {/* 유념 */}
           <div {...swipeHandlersYunyum} className="cursor-pointer">
             <div
-              className={`flex items-center justify-between mb-2 ${
-                highlightedYunyum ? "bg-yellow-100" : ""
-              }`}
+              className={`flex items-center justify-between mb-2 ${highlightedYunyum ? "bg-yellow-100" : ""
+                }`}
             >
-              <label>
-                有念 ({onSaengchwi.yunyum})
-              </label>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => increment("yunyum")}
-              >
+              <label>有念 ({onSaengchwi.yunyum})</label>
+              <Button variant="outline" size="icon" onClick={() => increment("yunyum")}>
                 <PlusIcon className="h-4 w-4 text-green-600" />
               </Button>
             </div>
@@ -106,18 +95,11 @@ export default function OnSaengChwi({
           {/* 무념 */}
           <div {...swipeHandlersMunyum} className="cursor-pointer">
             <div
-              className={`flex items-center justify-between mt-4 mb-2 ${
-                highlightedMunyum ? "bg-yellow-100" : ""
-              }`}
+              className={`flex items-center justify-between mt-4 mb-2 ${highlightedMunyum ? "bg-yellow-100" : ""
+                }`}
             >
-              <label>
-                無念 ({onSaengchwi.munyum})
-              </label>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => increment("munyum")}
-              >
+              <label>無念 ({onSaengchwi.munyum})</label>
+              <Button variant="outline" size="icon" onClick={() => increment("munyum")}>
                 <PlusIcon className="h-4 w-4 text-green-600" />
               </Button>
             </div>

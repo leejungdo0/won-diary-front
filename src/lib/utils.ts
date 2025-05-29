@@ -1,9 +1,9 @@
 import { MAX_TOTAL } from "@/constants";
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export const formatTime = (minutes: number): string => {
@@ -15,7 +15,11 @@ export const formatTime = (minutes: number): string => {
 };
 
 // Helper: clamp base time for slider and inputs
-export const clampTime = (item: string, base: number, extraTimes: Record<string, number>): number => {
+export const clampTime = (
+  item: string,
+  base: number,
+  extraTimes: Record<string, number>
+): number => {
   const sumExcept = Object.values(extraTimes).reduce((s, t) => s + t, 0) - (extraTimes[item] || 0);
   const maxBase = Math.min(720, MAX_TOTAL - sumExcept);
   return Math.min(Math.max(base, 0), maxBase);

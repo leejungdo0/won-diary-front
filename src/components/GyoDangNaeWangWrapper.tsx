@@ -36,17 +36,10 @@ export default function GyoDangNaeWangWrapper() {
   }, [sections, today]);
 
   const handleIncrement = (index: number, type: "yunyum" | "munyum") => {
-    setSections((prev) =>
-      prev.map((item, i) =>
-        i === index ? { ...item, [type]: item[type] + 1 } : item
-      )
+    setSections(prev =>
+      prev.map((item, i) => (i === index ? { ...item, [type]: item[type] + 1 } : item))
     );
   };
 
-  return (
-    <GyoDangNaeWang
-      sections={sections}
-      handleIncrement={handleIncrement}
-    />
-  );
+  return <GyoDangNaeWang sections={sections} handleIncrement={handleIncrement} />;
 }

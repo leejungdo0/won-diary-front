@@ -9,15 +9,42 @@ import { useSwipeable } from "react-swipeable";
 import { getTodayDateString } from "@/lib/utils";
 
 const BO_TONG_GUP_ITEMS = [
-  "연고살생", "도둑질", "간음", "연고음주", "잡기", "악한 말", "연고쟁투", "공금범용", "금전여수", "연고흡연",
+  "연고살생",
+  "도둑질",
+  "간음",
+  "연고음주",
+  "잡기",
+  "악한 말",
+  "연고쟁투",
+  "공금범용",
+  "금전여수",
+  "연고흡연",
 ];
 
 const TUKSIN_GUP_ITEMS = [
-  "공사단독", "타인과", "금은보패", "의복사치", "삿된 벗", "양인병설", "신용없음", "꾸미는 말", "연고 잠", "노래 춤",
+  "공사단독",
+  "타인과",
+  "금은보패",
+  "의복사치",
+  "삿된 벗",
+  "양인병설",
+  "신용없음",
+  "꾸미는 말",
+  "연고 잠",
+  "노래 춤",
 ];
 
 const beopma_SANGJEONG_ITEMS = [
-  "아만심", "두아내", "연고사육", "나태", "한입두말", "망어", "시기심", "탐심", "진심", "치심",
+  "아만심",
+  "두아내",
+  "연고사육",
+  "나태",
+  "한입두말",
+  "망어",
+  "시기심",
+  "탐심",
+  "진심",
+  "치심",
 ];
 
 export default function Gyemun() {
@@ -51,7 +78,7 @@ export default function Gyemun() {
         console.error("보통급 로드 실패:", e);
       }
     } else {
-      const init = Object.fromEntries(BO_TONG_GUP_ITEMS.map((item) => [item, 0]));
+      const init = Object.fromEntries(BO_TONG_GUP_ITEMS.map(item => [item, 0]));
       setBoTongGup(init);
       localStorage.setItem(getKey("boTongGup", date), JSON.stringify(init));
     }
@@ -63,7 +90,7 @@ export default function Gyemun() {
         console.error("특신급 로드 실패:", e);
       }
     } else {
-      const init = Object.fromEntries(TUKSIN_GUP_ITEMS.map((item) => [item, 0]));
+      const init = Object.fromEntries(TUKSIN_GUP_ITEMS.map(item => [item, 0]));
       setTukSinGup(init);
       localStorage.setItem(getKey("tukSinGup", date), JSON.stringify(init));
     }
@@ -75,7 +102,7 @@ export default function Gyemun() {
         console.error("법마상전급 로드 실패:", e);
       }
     } else {
-      const init = Object.fromEntries(beopma_SANGJEONG_ITEMS.map((item) => [item, 0]));
+      const init = Object.fromEntries(beopma_SANGJEONG_ITEMS.map(item => [item, 0]));
       setbeopmaSangjeong(init);
       localStorage.setItem(getKey("beopmaSangjeong", date), JSON.stringify(init));
     }
@@ -95,30 +122,27 @@ export default function Gyemun() {
 
   const increment = (type: "bo" | "tuk" | "beopma", item: string) => {
     if (type === "bo") {
-      setBoTongGup((prev) => ({ ...prev, [item]: (prev[item] || 0) + 1 }));
+      setBoTongGup(prev => ({ ...prev, [item]: (prev[item] || 0) + 1 }));
     } else if (type === "tuk") {
-      setTukSinGup((prev) => ({ ...prev, [item]: (prev[item] || 0) + 1 }));
+      setTukSinGup(prev => ({ ...prev, [item]: (prev[item] || 0) + 1 }));
     } else {
-      setbeopmaSangjeong((prev) => ({ ...prev, [item]: (prev[item] || 0) + 1 }));
+      setbeopmaSangjeong(prev => ({ ...prev, [item]: (prev[item] || 0) + 1 }));
     }
   };
 
-  const renderItems = (items: string[], type: "bo" | "tuk" | "beopma", state: { [key: string]: number }) => (
+  const renderItems = (
+    items: string[],
+    type: "bo" | "tuk" | "beopma",
+    state: { [key: string]: number }
+  ) => (
     <Card>
       <CardContent className="pt-6 space-y-2">
-        {items.map((item) => (
-          <div
-            key={item}
-            className="flex items-center justify-between"
-          >
+        {items.map(item => (
+          <div key={item} className="flex items-center justify-between">
             <span className="text-sm">
               {item} ({state[item] ?? 0})
             </span>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => increment(type, item)}
-            >
+            <Button variant="outline" size="icon" onClick={() => increment(type, item)}>
               <PlusIcon className="h-4 w-4 text-green-600" />
             </Button>
           </div>
@@ -128,12 +152,12 @@ export default function Gyemun() {
   );
 
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: (e) => {
+    onSwipedLeft: e => {
       e.event.preventDefault();
       if (activeTab === "bo") setActiveTab("tuk");
       else if (activeTab === "tuk") setActiveTab("beopma");
     },
-    onSwipedRight: (e) => {
+    onSwipedRight: e => {
       e.event.preventDefault();
       if (activeTab === "beopma") setActiveTab("tuk");
       else if (activeTab === "tuk") setActiveTab("bo");
@@ -154,7 +178,9 @@ export default function Gyemun() {
 
         <TabsContent value="bo">{renderItems(BO_TONG_GUP_ITEMS, "bo", boTongGup)}</TabsContent>
         <TabsContent value="tuk">{renderItems(TUKSIN_GUP_ITEMS, "tuk", tukSinGup)}</TabsContent>
-        <TabsContent value="beopma">{renderItems(beopma_SANGJEONG_ITEMS, "beopma", beopmaSangjeong)}</TabsContent>
+        <TabsContent value="beopma">
+          {renderItems(beopma_SANGJEONG_ITEMS, "beopma", beopmaSangjeong)}
+        </TabsContent>
       </Tabs>
     </div>
   );
