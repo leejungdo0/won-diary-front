@@ -81,6 +81,19 @@ export type BoTongGeupItem =
   | "geumJeonYeoSoo"
   | "yeonGoHeupYeon";
 
+export const BO_TONG_GEUP_ITEMS: BoTongGeupItem[] = [
+  "yeonGoSalSaeng",
+  "doDookJil",
+  "ganEum",
+  "yeonGoEumJoo",
+  "japGi",
+  "akHanMal",
+  "yeonGoJaengToo",
+  "gongGeumBumYong",
+  "geumJeonYeoSoo",
+  "yeonGoHeupYeon",
+];
+
 export const BoTongGeupObj = {
   yeonGoSalSaeng: "연고살생",
   doDookJil: "도둑질",

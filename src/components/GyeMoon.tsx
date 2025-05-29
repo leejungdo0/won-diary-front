@@ -10,9 +10,10 @@ import {
   BoTongGeupItem,
   TeukSinGeupItem,
   BeopMaSangJeonGeupItem,
-  BoTongGeupObj,
   TeukSinGeupObj,
   BeopMaSangJeonGeupObj,
+  BO_TONG_GEUP_ITEMS,
+  BoTongGeupObj,
 } from "@/types";
 import { useGyeMoonStore } from "stores/useGyeMoonStore";
 
@@ -63,12 +64,13 @@ export default function GyeMoon() {
         <TabsContent value="bo">
           <Card>
             <CardContent className="pt-6 space-y-2">
-              {Object.values(BoTongGeupObj).map(item => {
-                const count = boTong[item as BoTongGeupItem] ?? 0;
+              {BO_TONG_GEUP_ITEMS.map(item => {
+                const name = BoTongGeupObj[item as keyof typeof BoTongGeupObj];
+                const count = (boTong[item as keyof typeof boTong] as number) ?? 0;
                 return (
                   <div key={item} className="flex items-center justify-between">
                     <span className="text-sm">
-                      {item} ({count})
+                      {name} ({count})
                     </span>
                     <Button
                       variant="outline"
@@ -88,11 +90,12 @@ export default function GyeMoon() {
           <Card>
             <CardContent className="pt-6 space-y-2">
               {Object.values(TeukSinGeupObj).map(item => {
-                const count = teukSin[item as TeukSinGeupItem] ?? 0;
+                const name = TeukSinGeupObj[item as keyof typeof TeukSinGeupObj];
+                const count = (teukSin[item as keyof typeof teukSin] as number) ?? 0;
                 return (
                   <div key={item} className="flex items-center justify-between">
                     <span className="text-sm">
-                      {item} ({count})
+                      {name} ({count})
                     </span>
                     <Button
                       variant="outline"
@@ -112,11 +115,12 @@ export default function GyeMoon() {
           <Card>
             <CardContent className="pt-6 space-y-2">
               {Object.values(BeopMaSangJeonGeupObj).map(item => {
-                const count = beopMa[item as BeopMaSangJeonGeupItem] ?? 0;
+                const name = BeopMaSangJeonGeupObj[item as keyof typeof BeopMaSangJeonGeupObj];
+                const count = (beopMa[item as keyof typeof beopMa] as number) ?? 0;
                 return (
                   <div key={item} className="flex items-center justify-between">
                     <span className="text-sm">
-                      {item} ({count})
+                      {name} ({count})
                     </span>
                     <Button
                       variant="outline"

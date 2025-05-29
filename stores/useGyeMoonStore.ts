@@ -11,7 +11,7 @@ import {
   TeukSinGeupObj,
 } from "@/types";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 // 아이템 리스트 상수 (타입 정의에 맞춰 작성)
 const BOTONG_ITEMS = Object.keys(BoTongGeupObj) as BoTongGeupItem[];
@@ -66,7 +66,7 @@ export const useGyeMoonStore = create<GyeMoonState>()(
     }),
     {
       name: "gye-moon-storage",
-      getStorage: () => localStorage,
+      storage: createJSONStorage(() => localStorage),
     }
   )
 );
