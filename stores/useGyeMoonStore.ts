@@ -1,5 +1,6 @@
 // stores/useGyeMoonStore.ts
 import {
+  BeopMaSangJeonGeupCounts,
   BeopMaSangJeonGeupItem,
   BeopMaSangJeonGeupObj,
   BoTongGeupCounts,
@@ -20,7 +21,9 @@ const BEOPMA_ITEMS = Object.keys(BeopMaSangJeonGeupObj) as BeopMaSangJeonGeupIte
 type GyeMoonState = {
   boTongGeup: BoTongGeupCounts;
   teukSinGeup: TeukSinGeupCounts;
-  beopMaSangJeonGeup: Record<BeopMaSangJeonGeupItem, number>;
+  beopMaSangJeonGeup: BeopMaSangJeonGeupCounts;
+
+  // 각 아이템의 카운트를 설정하는 함수들
   setBoTongCount: (name: BoTongGeupItem, count: number) => void;
   setTeukSinCount: (name: TeukSinGeupItem, count: number) => void;
   setBeopMaCount: (name: BeopMaSangJeonGeupItem, count: number) => void;
@@ -30,9 +33,12 @@ type GyeMoonState = {
 export const useGyeMoonStore = create<GyeMoonState>()(
   persist(
     set => ({
-      boTongGeup: BOTONG_ITEMS.reduce((acc, k) => ({ ...acc, [k]: 0 }), {} as any),
-      teukSinGeup: TEUKSIN_ITEMS.reduce((acc, k) => ({ ...acc, [k]: 0 }), {} as any),
-      beopMaSangJeonGeup: BEOPMA_ITEMS.reduce((acc, k) => ({ ...acc, [k]: 0 }), {} as any),
+      boTongGeup: BOTONG_ITEMS.reduce((acc, k) => ({ ...acc, [k]: 0 }), {} as BoTongGeupCounts),
+      teukSinGeup: TEUKSIN_ITEMS.reduce((acc, k) => ({ ...acc, [k]: 0 }), {} as TeukSinGeupCounts),
+      beopMaSangJeonGeup: BEOPMA_ITEMS.reduce(
+        (acc, k) => ({ ...acc, [k]: 0 }),
+        {} as BeopMaSangJeonGeupCounts
+      ),
 
       setBoTongCount: (name, count) =>
         set(s => ({ boTongGeup: { ...s.boTongGeup, [name]: count } })),
@@ -47,9 +53,15 @@ export const useGyeMoonStore = create<GyeMoonState>()(
 
       reset: () =>
         set({
-          boTongGeup: BOTONG_ITEMS.reduce((acc, k) => ({ ...acc, [k]: 0 }), {} as any),
-          teukSinGeup: TEUKSIN_ITEMS.reduce((acc, k) => ({ ...acc, [k]: 0 }), {} as any),
-          beopMaSangJeonGeup: BEOPMA_ITEMS.reduce((acc, k) => ({ ...acc, [k]: 0 }), {} as any),
+          boTongGeup: BOTONG_ITEMS.reduce((acc, k) => ({ ...acc, [k]: 0 }), {} as BoTongGeupCounts),
+          teukSinGeup: TEUKSIN_ITEMS.reduce(
+            (acc, k) => ({ ...acc, [k]: 0 }),
+            {} as TeukSinGeupCounts
+          ),
+          beopMaSangJeonGeup: BEOPMA_ITEMS.reduce(
+            (acc, k) => ({ ...acc, [k]: 0 }),
+            {} as BeopMaSangJeonGeupCounts
+          ),
         }),
     }),
     {
