@@ -124,6 +124,19 @@ export type TeukSinGeupItem =
   | "yeonGoJam"
   | "noRaeChoom";
 
+export const TEUK_SIN_GEUP_ITEMS: TeukSinGeupItem[] = [
+  "gongSaDanDok",
+  "taInGwa",
+  "geumEunBoPae",
+  "euBokSaChi",
+  "satDwoenBeot",
+  "yangInByungSeol",
+  "sinYongEopEum",
+  "ggooMiNeunMal",
+  "yeonGoJam",
+  "noRaeChoom",
+];
+
 export const TeukSinGeupObj = {
   gongSaDanDok: "공사단독",
   taInGwa: "타인과",
@@ -153,6 +166,19 @@ export type BeopMaSangJeonGeupItem =
   | "tamSim"
   | "jinSim"
   | "chiSim";
+
+export const BEOP_MA_SANG_JEON_GEUP_ITEMS: BeopMaSangJeonGeupItem[] = [
+  "ahManSim",
+  "dooAhNae",
+  "yeonGoSaYook",
+  "naTae",
+  "hanIpDooMal",
+  "mangEo",
+  "siGiSim",
+  "tamSim",
+  "jinSim",
+  "chiSim",
+];
 
 export const BeopMaSangJeonGeupObj = {
   ahManSim: "아만심",

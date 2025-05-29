@@ -14,6 +14,8 @@ import {
   BeopMaSangJeonGeupObj,
   BO_TONG_GEUP_ITEMS,
   BoTongGeupObj,
+  TEUK_SIN_GEUP_ITEMS,
+  BEOP_MA_SANG_JEON_GEUP_ITEMS,
 } from "@/types";
 import { useGyeMoonStore } from "stores/useGyeMoonStore";
 
@@ -89,7 +91,7 @@ export default function GyeMoon() {
         <TabsContent value="tuk">
           <Card>
             <CardContent className="pt-6 space-y-2">
-              {Object.values(TeukSinGeupObj).map(item => {
+              {TEUK_SIN_GEUP_ITEMS.map(item => {
                 const name = TeukSinGeupObj[item as keyof typeof TeukSinGeupObj];
                 const count = (teukSin[item as keyof typeof teukSin] as number) ?? 0;
                 return (
@@ -114,7 +116,7 @@ export default function GyeMoon() {
         <TabsContent value="beopma">
           <Card>
             <CardContent className="pt-6 space-y-2">
-              {Object.values(BeopMaSangJeonGeupObj).map(item => {
+              {BEOP_MA_SANG_JEON_GEUP_ITEMS.map(item => {
                 const name = BeopMaSangJeonGeupObj[item as keyof typeof BeopMaSangJeonGeupObj];
                 const count = (beopMa[item as keyof typeof beopMa] as number) ?? 0;
                 return (
