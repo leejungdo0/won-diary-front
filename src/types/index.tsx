@@ -51,12 +51,9 @@ export interface GyoDangNaeWang {
   gongBooMoonDap: YooMooNyum;
   gamGakGamJeong: YooMooNyum;
   euSimHaeOh: YooMooNyum;
-  sonGiIpSon: Checked;
-  yeHwoeJeonSim: Checked;
-  soDeukBanJo: Checked;
-}
-export interface Checked {
-  checked: boolean;
+  sonGiIpSon: boolean;
+  yeHwoeJeonSim: boolean;
+  soDeukBanJo: boolean;
 }
 
 // 작업시간
@@ -68,7 +65,7 @@ export interface JakEopSiGan {
   heoSong: MinuteSpent;
 }
 
-// 계문 부분
+// 계문
 export type BoTongGeupItem =
   | "yeonGoSalSaeng"
   | "doDookJil"

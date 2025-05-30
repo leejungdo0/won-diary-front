@@ -1,110 +1,188 @@
-// OnSaengChwi.tsx
 "use client";
 
-import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "@radix-ui/react-icons";
-import { useSwipeable } from "react-swipeable";
 import { format } from "date-fns";
+import { useOnSaengChwiStore } from "stores/useOnSaengChwiStore";
+import { useGyoDangNaeWangStore } from "stores/useGyoDangNaeWangStore";
 
-export default function OnSaengChwi({ synced }: { synced: { yunyum: number; munyum: number } }) {
+export default function OnSaengChwi() {
   const today = format(new Date(), "yyyy-MM-dd");
-  const [onSaengchwi, setOnSaengchwi] = useState({ yunyum: 0, munyum: 0 });
-  const [highlightedYunyum, setHighlightedYunyum] = useState(false);
-  const [highlightedMunyum, setHighlightedMunyum] = useState(false);
 
-  const getStorageKey = (date: string) => `onSaengchwi-${date}`;
+  // 온전 생각 취사 & 미리준비 상태
+  const {
+    onSaengChwi,
+    miRiJoonBi,
+    updateYooMooNyum: updateOnSaeng,
+    updateMiRiJoonBi,
+  } = useOnSaengChwiStore();
 
-  // 외부에서 전달된 값으로 단방향 동기화
-  useEffect(() => {
-    setOnSaengchwi(synced);
-  }, [synced]);
-
-  // 로컬 저장
-  useEffect(() => {
-    localStorage.setItem(getStorageKey(today), JSON.stringify(onSaengchwi));
-  }, [onSaengchwi, today]);
-
-  const increment = (key: "yunyum" | "munyum") => {
-    setOnSaengchwi(prev => ({ ...prev, [key]: prev[key] + 1 }));
-  };
-
-  const decrement = (key: "yunyum" | "munyum") => {
-    setOnSaengchwi(prev => ({ ...prev, [key]: Math.max(0, prev[key] - 1) }));
-  };
-
-  const swipeHandlersYunyum = useSwipeable({
-    onSwipedLeft: () => {
-      increment("yunyum");
-      setHighlightedYunyum(true);
-    },
-    onSwipedRight: () => {
-      decrement("yunyum");
-      setHighlightedYunyum(true);
-    },
-    trackTouch: true,
-    trackMouse: true,
-    preventScrollOnSwipe: true,
-  });
-
-  const swipeHandlersMunyum = useSwipeable({
-    onSwipedLeft: () => {
-      increment("munyum");
-      setHighlightedMunyum(true);
-    },
-    onSwipedRight: () => {
-      decrement("munyum");
-      setHighlightedMunyum(true);
-    },
-    trackTouch: true,
-    trackMouse: true,
-    preventScrollOnSwipe: true,
-  });
-
-  useEffect(() => {
-    if (highlightedYunyum || highlightedMunyum) {
-      const timer = setTimeout(() => {
-        setHighlightedYunyum(false);
-        setHighlightedMunyum(false);
-      }, 300);
-      return () => clearTimeout(timer);
-    }
-  }, [highlightedYunyum, highlightedMunyum]);
+  // 교당내왕
+  const {
+    gongBooMoonDap,
+    gamGakGamJeong,
+    euSimHaeOh,
+    sonGiIpSon,
+    yeHwoeJeonSim,
+    soDeukBanJo,
+    updateYooMooNyum: updateGyoDang,
+    toggleChecked,
+  } = useGyoDangNaeWangStore();
 
   return (
-    <div className="max-w-md mx-auto mt-10 space-y-6">
-      <h2 className="text-xl font-semibold text-center">{today}</h2>
-      <Card>
-        <CardContent className="space-y-4 pt-6">
-          <div className="block font-semibold">온전 생각 취사</div>
+    <div className="w-full max-w-md mx-auto mt-10 space-y-6">
+      <h2 className="text-xl text-center">{today}</h2>
 
-          {/* 유념 */}
-          <div {...swipeHandlersYunyum} className="cursor-pointer">
-            <div
-              className={`flex items-center justify-between mb-2 ${
-                highlightedYunyum ? "bg-yellow-100" : ""
-              }`}
-            >
-              <label>有念 ({onSaengchwi.yunyum})</label>
-              <Button variant="outline" size="icon" onClick={() => increment("yunyum")}>
-                <PlusIcon className="h-4 w-4 text-green-600" />
-              </Button>
+      {/* 온전 생각 취사 */}
+      <Card>
+        <CardContent className="space-y-4">
+          <div className="text-center font-semibold">온전 생각 취사</div>
+          <div className="flex items-center justify-between">
+            <span>有念 ({onSaengChwi.yooNyum})</span>
+            <Button variant="outline" size="icon" onClick={() => updateOnSaeng({ yooNyum: 1 })}>
+              <PlusIcon className="h-4 w-4 text-green-600" />
+            </Button>
+          </div>
+          <div className="flex items-center justify-between">
+            <span>無念 ({onSaengChwi.mooNyum})</span>
+            <Button variant="outline" size="icon" onClick={() => updateOnSaeng({ mooNyum: 1 })}>
+              <PlusIcon className="h-4 w-4 text-green-600" />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 미리준비 */}
+      <Card>
+        <CardContent className="space-y-4">
+          <div className="text-center font-semibold">미리준비</div>
+          <div className="flex items-center justify-between">
+            <span>有念 ({miRiJoonBi.yooNyum})</span>
+            <Button variant="outline" size="icon" onClick={() => updateMiRiJoonBi({ yooNyum: 1 })}>
+              <PlusIcon className="h-4 w-4 text-green-600" />
+            </Button>
+          </div>
+          <div className="flex items-center justify-between">
+            <span>無念 ({miRiJoonBi.mooNyum})</span>
+            <Button variant="outline" size="icon" onClick={() => updateMiRiJoonBi({ mooNyum: 1 })}>
+              <PlusIcon className="h-4 w-4 text-green-600" />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 교당내왕 */}
+      <Card>
+        <CardContent className="space-y-6">
+          <div className="text-center font-semibold">교당내왕시 주의사항</div>
+
+          <div className="flex flex-col space-y-4">
+            {/* 공부문답 */}
+            <div className="space-y-1">
+              <div className="font-semibold">공부문답</div>
+              <div className="flex items-center justify-between">
+                <span>有念 ({gongBooMoonDap.yooNyum})</span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => updateGyoDang("gongBooMoonDap", { yooNyum: 1 })}
+                >
+                  <PlusIcon className="h-4 w-4 text-green-600" />
+                </Button>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>無念 ({gongBooMoonDap.mooNyum})</span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => updateGyoDang("gongBooMoonDap", { mooNyum: 1 })}
+                >
+                  <PlusIcon className="h-4 w-4 text-green-600" />
+                </Button>
+              </div>
+            </div>
+
+            {/* 감각감정 */}
+            <div className="space-y-1">
+              <div className="font-semibold">감각감정</div>
+              <div className="flex items-center justify-between">
+                <span>有念 ({gamGakGamJeong.yooNyum})</span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => updateGyoDang("gamGakGamJeong", { yooNyum: 1 })}
+                >
+                  <PlusIcon className="h-4 w-4 text-green-600" />
+                </Button>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>無念 ({gamGakGamJeong.mooNyum})</span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => updateGyoDang("gamGakGamJeong", { mooNyum: 1 })}
+                >
+                  <PlusIcon className="h-4 w-4 text-green-600" />
+                </Button>
+              </div>
+            </div>
+
+            {/* 의심해오 */}
+            <div className="space-y-1">
+              <div className="font-semibold">의심해오</div>
+              <div className="flex items-center justify-between">
+                <span>有念 ({euSimHaeOh.yooNyum})</span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => updateGyoDang("euSimHaeOh", { yooNyum: 1 })}
+                >
+                  <PlusIcon className="h-4 w-4 text-green-600" />
+                </Button>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>無念 ({euSimHaeOh.mooNyum})</span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => updateGyoDang("euSimHaeOh", { mooNyum: 1 })}
+                >
+                  <PlusIcon className="h-4 w-4 text-green-600" />
+                </Button>
+              </div>
             </div>
           </div>
 
-          {/* 무념 */}
-          <div {...swipeHandlersMunyum} className="cursor-pointer">
-            <div
-              className={`flex items-center justify-between mt-4 mb-2 ${
-                highlightedMunyum ? "bg-yellow-100" : ""
-              }`}
-            >
-              <label>無念 ({onSaengchwi.munyum})</label>
-              <Button variant="outline" size="icon" onClick={() => increment("munyum")}>
-                <PlusIcon className="h-4 w-4 text-green-600" />
-              </Button>
-            </div>
+          {/* 체크 항목 */}
+          <div className="mt-4 flex justify-around">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={sonGiIpSon}
+                onChange={() => toggleChecked("sonGiIpSon")}
+                className="mr-2"
+              />
+              선기입선
+            </label>
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={yeHwoeJeonSim}
+                onChange={() => toggleChecked("yeHwoeJeonSim")}
+                className="mr-2"
+              />
+              예회전심
+            </label>
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={soDeukBanJo}
+                onChange={() => toggleChecked("soDeukBanJo")}
+                className="mr-2"
+              />
+              소득반조
+            </label>
           </div>
         </CardContent>
       </Card>
