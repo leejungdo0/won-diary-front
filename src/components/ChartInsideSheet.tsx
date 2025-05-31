@@ -10,7 +10,6 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts";
-import { ExtraItem } from "./TimeInput";
 
 // Define ChartPoint type if not already imported
 export type ChartPoint = {
@@ -18,7 +17,7 @@ export type ChartPoint = {
   value: number; // y axis, numeric value for the chart
 };
 interface ChartInsideSheetProps {
-  item: ExtraItem;
+  item: ChartPoint[]; // 차트 데이터 배열
 }
 
 /**
