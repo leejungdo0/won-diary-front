@@ -22,6 +22,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSangSiIlGiStore } from "stores/useSangSiIlGiStore";
 import type { OnSaengChwi, GyoDangNaeWang, YooMooNyum } from "@/types";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetClose,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import ChartInsideSheet from "./ChartInsideSheet";
 
 export default function OnSaengChwi() {
   const today = format(new Date(), "yyyy-MM-dd");
@@ -53,6 +62,16 @@ export default function OnSaengChwi() {
     gamGakGamJeong: "감각감정",
     euSimHaeOh: "의심해오",
   };
+
+  const exampleData = [
+    { date: "2025-05-25", value: 120 },
+    { date: "2025-05-26", value: 150 },
+    { date: "2025-05-27", value: 90 },
+    { date: "2025-05-28", value: 180 },
+    { date: "2025-05-29", value: 200 },
+    { date: "2025-05-30", value: 160 },
+    { date: "2025-05-31", value: 140 },
+  ];
 
   return (
     <div className="w-full max-w-md mx-auto mt-10 space-y-6">
@@ -238,6 +257,7 @@ export default function OnSaengChwi() {
       </Card>
 
       {/* 교당내왕 카드 */}
+
       <Card>
         <CardContent className="space-y-6">
           <div className="text-center font-semibold">교당내왕시 주의사항</div>
@@ -245,7 +265,24 @@ export default function OnSaengChwi() {
             const val = gyoDangNaeWang[key] as YooMooNyum;
             return (
               <div key={key} className="flex items-center justify-between">
-                <span>{gyoLabels[key]}</span>
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <span>{gyoLabels[key]}</span>
+                  </SheetTrigger>
+                  <SheetContent side="right" className="w-full sm:w-1/2">
+                    <SheetHeader>
+                      <SheetTitle className="text-lg font-medium">
+                        {gyoLabels[key]} 시계열 차트
+                      </SheetTitle>
+                      <SheetClose asChild>
+                        <Button size="icon">✕</Button>
+                      </SheetClose>
+                    </SheetHeader>
+                    <div className="mt-4 h-64">
+                      <ChartInsideSheet item={exampleData} />
+                    </div>
+                  </SheetContent>
+                </Sheet>
                 <div className="flex items-center space-x-2">
                   <Button
                     size="icon"

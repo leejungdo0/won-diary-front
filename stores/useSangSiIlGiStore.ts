@@ -15,6 +15,8 @@ import {
   TeukSinGeupCounts,
   BeopMaSangJeonGeupCounts,
 } from "@/types";
+import { ExtraItem } from "@/components/TimeInput";
+import { ChartPoint } from "@/components/ChartInsideSheet";
 
 // Extra Time 입력 항목 (TimeInput.tsx와 순환 참조 방지 위해 별도 정의)
 export const TIME_INPUT_ITEMS = [
@@ -33,6 +35,65 @@ export const TIME_INPUT_ITEMS = [
   "수면",
   "허송",
 ] as const;
+
+// 예시 초기값 (mock 데이터)
+export const exampleChartData: Record<ExtraItem, ChartPoint[]> = {
+  경전: [
+    { date: "2025-05-25", value: 120 },
+    { date: "2025-05-26", value: 150 },
+    { date: "2025-05-27", value: 90 },
+    { date: "2025-05-28", value: 180 },
+    { date: "2025-05-29", value: 200 },
+    { date: "2025-05-30", value: 160 },
+    { date: "2025-05-31", value: 140 },
+  ],
+  법규: [
+    { date: "2025-05-25", value: 60 },
+    { date: "2025-05-26", value: 80 },
+    { date: "2025-05-27", value: 100 },
+    { date: "2025-05-28", value: 120 },
+    { date: "2025-05-29", value: 110 },
+    { date: "2025-05-30", value: 130 },
+    { date: "2025-05-31", value: 90 },
+  ],
+  강연: [
+    { date: "2025-05-25", value: 30 },
+    { date: "2025-05-26", value: 45 },
+    { date: "2025-05-27", value: 50 },
+    { date: "2025-05-28", value: 70 },
+    { date: "2025-05-29", value: 60 },
+    { date: "2025-05-30", value: 55 },
+    { date: "2025-05-31", value: 65 },
+  ],
+  회화: [
+    { date: "2025-05-25", value: 20 },
+    { date: "2025-05-26", value: 25 },
+    { date: "2025-05-27", value: 30 },
+    { date: "2025-05-28", value: 35 },
+    { date: "2025-05-29", value: 40 },
+    { date: "2025-05-30", value: 45 },
+    { date: "2025-05-31", value: 50 },
+  ],
+  의두: [
+    { date: "2025-05-25", value: 10 },
+    { date: "2025-05-26", value: 15 },
+    { date: "2025-05-27", value: 20 },
+    { date: "2025-05-28", value: 25 },
+    { date: "2025-05-29", value: 30 },
+    { date: "2025-05-30", value: 35 },
+    { date: "2025-05-31", value: 40 },
+  ],
+  성리: [], // 데이터가 없으면 빈 배열 가능
+  염불: [],
+  좌선: [],
+  기도: [],
+  학습: [],
+  봉공: [],
+  휴식: [],
+  수면: [],
+  허송: [],
+};
+
 export type TimeInputItem = (typeof TIME_INPUT_ITEMS)[number];
 
 interface SangSiIlGiStore extends SangSiIlGi {
@@ -54,6 +115,7 @@ interface SangSiIlGiStore extends SangSiIlGi {
   setTime: (item: TimeInputItem, minutes: number) => void;
   setTableMode: (mode: boolean) => void;
   resetTimes: () => void;
+  chartData?: Record<ExtraItem, ChartPoint[]>;
 }
 
 // 계문 초기 배열 생성
