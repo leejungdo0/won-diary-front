@@ -90,29 +90,37 @@ export default function OnSaengChwi() {
 
               {/* 유념/무념 및 메뉴 버튼 그룹 */}
               <div className="flex items-center space-x-2">
-                <Button
-                  size="icon"
-                  variant="outline"
-                  onClick={() => {
-                    updateOnSaengChwi(idx, { yooNyum: 1 });
-                    updateOnSaengChwi(0, { yooNyum: 1 });
-                  }}
-                >
-                  <PlusIcon className="h-4 w-4 text-green-600" />
-                </Button>
                 <span className="min-w-[4rem] text-right">有念 {entry.yooNyum}</span>
-
                 <Button
                   size="icon"
                   variant="outline"
                   onClick={() => {
-                    updateOnSaengChwi(idx, { mooNyum: 1 });
-                    updateOnSaengChwi(0, { mooNyum: 1 });
+                    // 항상 해당 항목을 +1 한다.
+                    updateOnSaengChwi(idx, { yooNyum: 1 });
+                    // 만약 기본(idx=0)이 아니라면, 기본에도 +1 추가
+                    if (idx !== 0) {
+                      updateOnSaengChwi(0, { yooNyum: 1 });
+                    }
                   }}
                 >
                   <PlusIcon className="h-4 w-4 text-green-600" />
                 </Button>
+
                 <span className="min-w-[4rem] text-right">無念 {entry.mooNyum}</span>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => {
+                    // 항상 해당 항목을 +1 한다.
+                    updateOnSaengChwi(idx, { yooNyum: 1 });
+                    // 만약 기본(idx=0)이 아니라면, 기본에도 +1 추가
+                    if (idx !== 0) {
+                      updateOnSaengChwi(0, { mooNyum: 1 });
+                    }
+                  }}
+                >
+                  <PlusIcon className="h-4 w-4 text-green-600" />
+                </Button>
 
                 {/* Kebab 메뉴(⋮) : 삭제/변경 옵션 제공 */}
                 {idx > 0 ? (

@@ -206,18 +206,19 @@ export const useSangSiIlGiStore = create<SangSiIlGiStore>()(
           const list = state.onSaengChwi.filter((_, i) => i !== index);
           return { onSaengChwi: list.length ? list : [state.onSaengChwi[0]] };
         }),
-      updateOnSaengChwi: (index, delta) =>
-        set(state => ({
-          onSaengChwi: state.onSaengChwi.map((item, i) =>
-            i === index
-              ? {
-                  ...item,
-                  yooNyum: item.yooNyum + (delta.yooNyum ?? 0),
-                  mooNyum: item.mooNyum + (delta.mooNyum ?? 0),
-                }
-              : item
-          ),
-        })),
+      updateOnSaengChwi: (index, delta) => {
+        set(state => {
+          const list = state.onSaengChwi.map((entry, idx) => {
+            if (idx !== index) return entry;
+            return {
+              ...entry,
+              yooNyum: entry.yooNyum + (delta.yooNyum ?? 0),
+              mooNyum: entry.mooNyum + (delta.mooNyum ?? 0),
+            };
+          });
+          return { onSaengChwi: list };
+        });
+      },
       updateOnSaengChwiName: (index, newName) =>
         set(state => ({
           onSaengChwi: state.onSaengChwi.map((item, i) =>
