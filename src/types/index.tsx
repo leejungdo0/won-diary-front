@@ -28,6 +28,9 @@ export interface SangSiIlGi {
     giDoh: MinuteSpent; // 기도
     chamHwoeBanSeong: YooMooNyum; // 참회반성
   };
+  gyoDangNaeWang: GyoDangNaeWang; // 교당내왕
+  jakEopSiGan: JakEopSiGan; // 작업시간
+  gyeMoon: GyeMoon; // 계문
 }
 
 // onSaengChwi 배열 아이템
@@ -51,7 +54,7 @@ export interface GyoDangNaeWang {
   gongBooMoonDap: YooMooNyum;
   gamGakGamJeong: YooMooNyum;
   euSimHaeOh: YooMooNyum;
-  sonGiIpSon: boolean;
+  sonGiIpSeon: boolean;
   yeHwoeJeonSim: boolean;
   soDeukBanJo: boolean;
 }

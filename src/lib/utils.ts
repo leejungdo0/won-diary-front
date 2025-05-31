@@ -1,6 +1,7 @@
 import { MAX_TOTAL } from "@/constants";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import process from "process";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -26,3 +27,8 @@ export const clampTime = (
 };
 
 export const getTodayDateString = () => new Date().toISOString().split("T")[0];
+
+const development: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === "development";
+export default function isDev(): boolean {
+  return development;
+}

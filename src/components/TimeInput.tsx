@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Label } from "./ui/label";
 import { Switch } from "@/components/ui/switch";
 import { formatTime, getTodayDateString } from "../lib/utils";
 import { MAX_TOTAL } from "@/constants";
 import { clampTime } from "@/lib/utils";
+import { useSangSiIlGiStore } from "stores/useSangSiIlGiStore";
 
+// EXTRA_ITEMS와 그 타입 정의
 export const EXTRA_ITEMS = [
   "경전",
   "법규",
@@ -22,22 +24,15 @@ export const EXTRA_ITEMS = [
   "휴식",
   "수면",
   "허송",
-];
-
-const getInitialTimes = (): Record<string, number> => {
-  const initial: Record<string, number> = {};
-  EXTRA_ITEMS.forEach(item => {
-    initial[item] = 0;
-  });
-  return initial;
-};
+] as const;
+export type ExtraItem = (typeof EXTRA_ITEMS)[number];
 
 interface TableProps {
-  extraTimes: Record<string, number>;
-  onTableChange: (item: string, total: number) => void;
+  extraTimes: Record<ExtraItem, number>;
+  onTableChange: (item: ExtraItem, total: number) => void;
 }
 const ExtraTimeTable: React.FC<TableProps> = ({ extraTimes, onTableChange }) => {
-  const studyKeys = ["경전", "법규", "강연"];
+  const studyKeys: ExtraItem[] = ["경전", "법규", "강연"];
   const studyExtra = studyKeys.reduce((sum, key) => sum + (extraTimes[key] || 0), 0);
   const rawTotal = Object.values(extraTimes).reduce((sum, t) => sum + t, 0);
   const totalTime = Math.min(rawTotal, MAX_TOTAL);
@@ -115,18 +110,18 @@ const ExtraTimeTable: React.FC<TableProps> = ({ extraTimes, onTableChange }) => 
 };
 
 interface SliderProps {
-  extraTimes: Record<string, number>;
-  onSliderChange: (item: string, total: number) => void;
+  extraTimes: Record<ExtraItem, number>;
+  onSliderChange: (item: ExtraItem, total: number) => void;
 }
 const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) => {
-  const studyKeys = ["경전", "법규", "강연"];
+  const studyKeys: ExtraItem[] = ["경전", "법규", "강연"];
   const studyExtra = studyKeys.reduce((sum, key) => sum + (extraTimes[key] || 0), 0);
   const rawTotal = Object.values(extraTimes).reduce((sum, t) => sum + t, 0);
   const totalTime = Math.min(rawTotal, MAX_TOTAL);
   const sleepTime = extraTimes["수면"] || 0;
   const netTime = Math.max(totalTime - sleepTime, 0);
 
-  const adjust = (item: string, delta: number) => {
+  const adjust = (item: ExtraItem, delta: number) => {
     const base = extraTimes[item] || 0;
     const newBase = clampTime(item, base + delta, extraTimes);
     onSliderChange(item, newBase);
@@ -209,41 +204,31 @@ const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) 
 };
 
 export default function TimeInput() {
-  useEffect(() => {
+  // Zustand store에서 상태를 가져옵니다.
+  const extraTimes = useSangSiIlGiStore(state => state.extraTimes);
+  const tableMode = useSangSiIlGiStore(state => state.tableMode);
+  const setExtraTime = useSangSiIlGiStore(state => state.setTime);
+  const setTableMode = useSangSiIlGiStore(state => state.setTableMode);
+
+  // 초기화 로직: 날짜 변경 시 store 내 값을 초기화합니다.
+  React.useEffect(() => {
     if (typeof window === "undefined") return;
     const lastClearDate = localStorage.getItem("lastClearDate");
     const today = getTodayDateString();
     if (lastClearDate !== today) {
-      localStorage.removeItem("extraTimes");
+      useSangSiIlGiStore.getState().resetTimes();
       localStorage.setItem("lastClearDate", today);
     }
   }, []);
 
-  const [extraTimes, setExtraTimes] = useState<Record<string, number>>(getInitialTimes());
-  const [tableMode, setTableMode] = useState(false);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("extraTimes");
-    const mode = localStorage.getItem("tableMode");
-    if (stored) setExtraTimes(JSON.parse(stored));
-    if (mode) setTableMode(JSON.parse(mode));
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("extraTimes", JSON.stringify(extraTimes));
-  }, [extraTimes]);
-  useEffect(() => {
-    localStorage.setItem("tableMode", JSON.stringify(tableMode));
-  }, [tableMode]);
-
-  const handleTableChange = (item: string, base: number) => {
+  const handleTableChange = (item: ExtraItem, base: number) => {
     const newBase = clampTime(item, base, extraTimes);
-    setExtraTimes(prev => ({ ...prev, [item]: newBase }));
+    setExtraTime(item, newBase);
   };
 
-  const handleSliderChange = (item: string, base: number) => {
+  const handleSliderChange = (item: ExtraItem, base: number) => {
     const newBase = clampTime(item, base, extraTimes);
-    setExtraTimes(prev => ({ ...prev, [item]: newBase }));
+    setExtraTime(item, newBase);
   };
 
   return (
