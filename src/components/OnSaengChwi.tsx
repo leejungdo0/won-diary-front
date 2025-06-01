@@ -22,15 +22,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSangSiIlGiStore } from "stores/useSangSiIlGiStore";
 import type { OnSaengChwi, GyoDangNaeWang, YooMooNyum } from "@/types";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetClose,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import ChartInsideSheet from "./ChartInsideSheet";
+import { fakeLineChartData, fakeYooMooNyumData } from "public/data/FakeChartData";
+import ChartSheet from "./ChartSheet";
 
 export default function OnSaengChwi() {
   const today = format(new Date(), "yyyy-MM-dd");
@@ -63,16 +58,6 @@ export default function OnSaengChwi() {
     euSimHaeOh: "의심해오",
   };
 
-  const exampleData = [
-    { date: "2025-05-25", value: 120 },
-    { date: "2025-05-26", value: 150 },
-    { date: "2025-05-27", value: 90 },
-    { date: "2025-05-28", value: 180 },
-    { date: "2025-05-29", value: 200 },
-    { date: "2025-05-30", value: 160 },
-    { date: "2025-05-31", value: 140 },
-  ];
-
   return (
     <div className="w-full max-w-md mx-auto mt-10 space-y-6">
       <h2 className="text-xl text-center">{today}</h2>
@@ -80,7 +65,9 @@ export default function OnSaengChwi() {
       {/* 온생취 카드 */}
       <Card>
         <CardContent className="space-y-4">
-          <div className="text-center font-semibold">온생취</div>
+          <div className="text-center font-semibold">
+            <ChartSheet label="온생취" data={fakeLineChartData} />
+          </div>
           {onSaengChwi.map((entry: OnSaengChwi, idx: number) => (
             <div key={idx} className="flex items-center justify-between">
               {/* 이름 또는 기본 레이블 */}
@@ -248,7 +235,9 @@ export default function OnSaengChwi() {
       {/* 미리준비 카드 */}
       <Card>
         <CardContent className="space-y-4">
-          <div className="text-center font-semibold">미리준비</div>
+          <div className="text-center font-semibold">
+            <ChartSheet label="미리준비" data={fakeLineChartData} />
+          </div>
           <div className="flex items-center justify-between">
             <span>有念 {miRiJoonBi.yooNyum}</span>
             <Button size="icon" variant="outline" onClick={() => updateMiRiJoonBi({ yooNyum: 1 })}>
@@ -268,29 +257,14 @@ export default function OnSaengChwi() {
 
       <Card>
         <CardContent className="space-y-6">
-          <div className="text-center font-semibold">교당내왕시 주의사항</div>
+          <div className="text-center font-semibold">
+            <ChartSheet label="교당내왕시 주의사항" data={fakeLineChartData} />
+          </div>
           {gyoKeys.map(key => {
             const val = gyoDangNaeWang[key] as YooMooNyum;
             return (
               <div key={key} className="flex items-center justify-between">
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <span>{gyoLabels[key]}</span>
-                  </SheetTrigger>
-                  <SheetContent side="right" className="w-full sm:w-1/2">
-                    <SheetHeader>
-                      <SheetTitle className="text-lg font-medium">
-                        {gyoLabels[key]} 시계열 차트
-                      </SheetTitle>
-                      <SheetClose asChild>
-                        <Button size="icon">✕</Button>
-                      </SheetClose>
-                    </SheetHeader>
-                    <div className="mt-4 h-64">
-                      <ChartInsideSheet item={exampleData} />
-                    </div>
-                  </SheetContent>
-                </Sheet>
+                <span>{gyoLabels[key]}</span>
                 <div className="flex items-center space-x-2">
                   <Button
                     size="icon"
