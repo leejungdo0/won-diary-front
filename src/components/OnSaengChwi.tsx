@@ -5,7 +5,6 @@ import { format } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { PlusIcon, DotsVerticalIcon } from "@radix-ui/react-icons";
 import {
   Drawer,
@@ -23,11 +22,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSangSiIlGiStore } from "stores/useSangSiIlGiStore";
 import type { OnSaengChwi, GyoDangNaeWang, YooMooNyum } from "@/types";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import ChartInsideSheet from "./charts/ChartInsideSheet";
-import { fakeLineChartData, fakeYooMooNyumData } from "public/data/FakeChartData";
+import { fakeLineChartData } from "public/data/FakeChartData";
 import ChartSheet from "./charts/ChartSheet";
-import { Label } from "./ui/label";
 import GyoDangCheckboxGroup from "./GyoDangNaeWangCheckBoxGroup";
 
 export default function OnSaengChwi() {
