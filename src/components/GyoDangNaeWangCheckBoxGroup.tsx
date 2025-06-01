@@ -33,7 +33,7 @@ export default function GyoDangCheckboxGroup() {
           onChange={handleChange("sonGiIpSeon")}
           className="checkbox mb-1"
         />
-        <span className="text-sm">선기입선</span>
+        <span>선기입선</span>
       </label>
 
       <label className="flex flex-col items-center">
@@ -43,7 +43,7 @@ export default function GyoDangCheckboxGroup() {
           onChange={handleChange("yeHwoeJeonSim")}
           className="checkbox mb-1"
         />
-        <span className="text-sm">예회전심</span>
+        <span>예회전심</span>
       </label>
 
       <label className="flex flex-col items-center">
@@ -53,7 +53,7 @@ export default function GyoDangCheckboxGroup() {
           onChange={handleChange("soDeukBanJo")}
           className="checkbox mb-1"
         />
-        <span className="text-sm">소득반조</span>
+        <span>소득반조</span>
       </label>
     </div>
   );
