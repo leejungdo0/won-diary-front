@@ -16,7 +16,7 @@ import {
   BeopMaSangJeonGeupCounts,
 } from "@/types";
 import { ExtraItem } from "@/components/TimeInput";
-import { ChartPoint } from "@/components/ChartInsideSheet";
+import { ChartPoint } from "@/components/charts/ChartInsideSheet";
 
 // Extra Time 입력 항목 (TimeInput.tsx와 순환 참조 방지 위해 별도 정의)
 export const TIME_INPUT_ITEMS = [

@@ -29,7 +29,6 @@ export default function GyeMoon() {
   const setBoTong = useSangSiIlGiStore(s => s.setBoTongCount);
   const setTeukSin = useSangSiIlGiStore(s => s.setTeukSinCount);
   const setBeopMa = useSangSiIlGiStore(s => s.setBeopMaCount);
-  const resetAll = useSangSiIlGiStore(s => s.resetGyeMoon);
 
   // 탭 상태는 UserDataStore에 저장
   const lastOpenTab = useUserDataStore(s => s.settings.lastOpenTab);
@@ -52,9 +51,6 @@ export default function GyeMoon() {
     <div className="w-full max-w-md mx-auto mt-10" {...swipeHandlers}>
       <div className="flex justify-between mb-4">
         <h2 className="text-lg">계문</h2>
-        <Button size="sm" variant="outline" onClick={resetAll}>
-          초기화
-        </Button>
       </div>
 
       <Tabs
