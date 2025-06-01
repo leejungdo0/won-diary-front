@@ -147,6 +147,7 @@ const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) 
               value={item === "학습" ? base + studyExtra : base}
               onChange={e => adjust(item, parseInt(e.target.value, 10))}
               className="w-full h-8 accent-blue-500"
+              disabled={true}
             />
             <div className="flex justify-center space-x-2">
               <button
