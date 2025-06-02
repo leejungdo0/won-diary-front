@@ -56,7 +56,7 @@ export default function GyeMoon() {
       <Tabs
         value={lastOpenTab}
         onValueChange={value => setLastOpenTab(value as "bo" | "tuk" | "beopma")}
-        className="w-full"
+        className="max-w-sm"
       >
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="bo">보통급</TabsTrigger>

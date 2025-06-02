@@ -234,7 +234,7 @@ export default function TimeInput() {
 
   return (
     <div className="w-full py-6 space-y-6">
-      <div className="max-w-md mx-auto space-y-6">
+      <div className="max-w-sm mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <Label className="text-sm font-medium">표에서 입력 모드</Label>
           <Switch checked={tableMode} onCheckedChange={setTableMode} />

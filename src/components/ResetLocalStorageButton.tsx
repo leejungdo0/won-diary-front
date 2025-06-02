@@ -12,7 +12,7 @@ export default function ResetLocalStorageButton() {
 
   return (
     <Button variant="destructive" className="mt-3" onClick={handleReset}>
-      전체 초기화
+      데이터 초기화
     </Button>
   );
 }

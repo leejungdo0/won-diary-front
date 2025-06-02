@@ -58,7 +58,7 @@ export default function OnSaengChwi() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto mt-10 space-y-6">
+    <div className="max-w-sm mx-auto mt-10 space-y-6">
       <h2 className="text-xl text-center">{today}</h2>
 
       {/* 온생취 카드 */}
