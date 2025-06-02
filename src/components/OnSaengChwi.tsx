@@ -23,8 +23,13 @@ import {
 import { useSangSiIlGiStore } from "stores/useSangSiIlGiStore";
 import type { OnSaengChwi, GyoDangNaeWang, YooMooNyum } from "@/types";
 import { fakeLineChartData } from "public/data/FakeChartData";
-import ChartSheet from "./charts/ChartSheet";
 import GyoDangCheckboxGroup from "./GyoDangNaeWangCheckBoxGroup";
+import dynamic from "next/dynamic";
+import Loading from "./Loading";
+const ChartSheet = dynamic(() => import("./charts/ChartSheet"), {
+  ssr: false,
+  loading: () => <Loading />,
+});
 
 export default function OnSaengChwi() {
   const today = format(new Date(), "yyyy-MM-dd");

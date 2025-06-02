@@ -1,10 +1,9 @@
-// components/ChartSheet.tsx
 "use client";
 
 import React from "react";
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import ChartInsideSheet from "./ChartInsideSheet"; // 실제 경로에 맞게 수정하세요
 import { ChartNoAxesCombined } from "lucide-react";
+import dynamic from "next/dynamic";
 
 interface ChartSheetProps {
   /** Sheet를 여는 트리거에 표시할 레이블 */
@@ -14,6 +13,8 @@ interface ChartSheetProps {
 }
 
 export default function ChartSheet({ label, data }: ChartSheetProps) {
+  const ChartInsideSheet = dynamic(() => import("./ChartInsideSheet"));
+
   return (
     <Sheet>
       <div className="relative w-full h-10">
