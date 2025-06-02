@@ -14,8 +14,18 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard } from "lucide-react";
+import {
+  ChartBarIncreasingIcon,
+  Circle,
+  LayoutDashboard,
+  SearchIcon,
+  SettingsIcon,
+} from "lucide-react";
+import Link from "next/link";
+import { FaceIcon, QuestionMarkIcon } from "@radix-ui/react-icons";
+import { DatePicker } from "./date-picker";
 
 const data = {
   user: {
@@ -25,94 +35,42 @@ const data = {
   },
   navMain: [
     {
-      title: "Dashboard",
-      url: "#",
+      title: "대시보드",
+      url: "/dashboard",
       icon: LayoutDashboard,
     },
     {
-      title: "Lifecycle",
-      url: "#",
-      icon: LayoutDashboard,
+      title: "분석",
+      url: "/analytics",
+      icon: ChartBarIncreasingIcon,
     },
     {
-      title: "Analytics",
+      title: "교화단",
       url: "#",
-      icon: LayoutDashboard,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: LayoutDashboard,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: LayoutDashboard,
+      icon: FaceIcon,
     },
   ],
-  navClouds: [
+  calendars: [
     {
-      title: "Capture",
-      icon: LayoutDashboard,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: LayoutDashboard,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: LayoutDashboard,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
+      name: "My Calendars",
+      items: ["Personal", "Work", "Family"],
     },
   ],
   navSecondary: [
     {
       title: "Settings",
       url: "#",
-      icon: LayoutDashboard,
+      icon: SettingsIcon,
     },
     {
       title: "Get Help",
       url: "#",
-      icon: LayoutDashboard,
+      icon: QuestionMarkIcon,
     },
     {
       title: "Search",
       url: "#",
-      icon: LayoutDashboard,
+      icon: SearchIcon,
     },
   ],
   documents: [
@@ -141,15 +99,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
-              <a href="#">
-                <LayoutDashboard className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
-              </a>
+              <Link href="">
+                <Circle className="!size-5" />
+                <span className="text-base font-semibold">상시일기</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
+        <DatePicker />
+        <SidebarSeparator className="mx-0" />
         <NavMain items={data.navMain} />
         <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
