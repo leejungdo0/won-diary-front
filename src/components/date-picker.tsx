@@ -1,3 +1,4 @@
+import "react-day-picker/dist/style.css";
 import { Calendar } from "@/components/ui/calendar";
 import { SidebarGroup, SidebarGroupContent } from "@/components/ui/sidebar";
 import { ko } from "date-fns/locale";
