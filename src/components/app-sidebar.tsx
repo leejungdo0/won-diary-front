@@ -41,7 +41,7 @@ const data = {
     },
     {
       title: "분석",
-      url: "/analytics",
+      url: "#",
       icon: ChartBarIncreasingIcon,
     },
     {
