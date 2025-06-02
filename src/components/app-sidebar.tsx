@@ -41,7 +41,7 @@ const data = {
     },
     {
       title: "분석",
-      url: "#",
+      url: "/analytics",
       icon: ChartBarIncreasingIcon,
     },
     {
@@ -105,7 +105,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-        </SidebarMenu>
+        </SidebarMenu> 
       </SidebarHeader>
       <SidebarContent>
         <DatePicker />
