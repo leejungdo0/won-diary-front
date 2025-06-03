@@ -1,3 +1,5 @@
+import { TimeInputItem } from "stores/useSangSiIlGiStore";
+
 export interface UserData {
   date: string; // "YYYY-MM-DD" 형태의 날짜
   settings: UserSettings; // 사용자 설정
@@ -12,25 +14,10 @@ export interface UserSettings {
 export interface SangSiIlGi {
   onSaengChwi: OnSaengChwi[]; // 온생취(이름·유념·무념 리스트)
   miRiJoonBi: YooMooNyum; // 미리준비(유념·무념)
-  study: {
-    gyungJeon: MinuteSpent; // 경전(분 단위)
-    beopGyoo: MinuteSpent; // 법규(분 단위)
-    gangYeon: MinuteSpent; // 강연(분 단위)
-  };
-  saRiYeonGoo: {
-    hwoeHwa: MinuteSpent; // 회화(분 단위)
-    euDoo: MinuteSpent; // 의두(분 단위)
-    seongRi: MinuteSpent; // 성리
-  };
-  jungSinSooYang: {
-    yeonBool: MinuteSpent; // 염불
-    jwaSon: MinuteSpent; // 좌선
-    giDoh: MinuteSpent; // 기도
-    chamHwoeBanSeong: YooMooNyum; // 참회반성
-  };
   gyoDangNaeWang: GyoDangNaeWang; // 교당내왕
   jakEopSiGan: JakEopSiGan; // 작업시간
   gyeMoon: GyeMoon; // 계문
+  extraTimes: Record<TimeInputItem, number>; // Extra Time 관련 상태
 }
 
 // onSaengChwi 배열 아이템

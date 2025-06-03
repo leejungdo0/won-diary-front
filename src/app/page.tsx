@@ -1,12 +1,11 @@
 "use client";
 
-import GyeMoon from "@/components/GyeMoon";
 import ResetLocalStorageButton from "@/components/ResetLocalStorageButton";
-import TimeInput from "@/components/TimeInput";
 import isDev, { getTodayDateString } from "@/lib/utils";
 import { useEffect } from "react";
 import { Analytics } from "@vercel/analytics/next";
-import OnSaengChwi from "@/components/OnSaengChwi";
+import dynamic from "next/dynamic";
+import Loading from "@/components/Loading";
 
 export default function Home() {
   // reset localStorage if today is a new day
@@ -19,6 +18,19 @@ export default function Home() {
       localStorage.setItem("lastClearDate", today);
     }
   }, []);
+
+  const OnSaengChwi = dynamic(() => import("@/components/OnSaengChwi"), {
+    ssr: false,
+    loading: () => <Loading />,
+  });
+  const TimeInput = dynamic(() => import("@/components/TimeInput"), {
+    ssr: false,
+    loading: () => <Loading />,
+  });
+  const GyeMoon = dynamic(() => import("@/components/GyeMoon"), {
+    ssr: false,
+    loading: () => <Loading />,
+  });
 
   return (
     <>

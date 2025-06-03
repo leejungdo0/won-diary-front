@@ -42,7 +42,7 @@ export const useUserDataStore = create<UserDataState>()(
       reset: () => set(() => ({ ...initialData })),
     }),
     {
-      name: "user-data", // localStorage key
+      name: "userData", // localStorage key
       storage: createJSONStorage(() => localStorage), // localStorage 사용
     }
   )

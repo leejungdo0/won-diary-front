@@ -16,7 +16,7 @@ import {
   BeopMaSangJeonGeupCounts,
 } from "@/types";
 import { ExtraItem } from "@/components/TimeInput";
-import { ChartPoint } from "@/components/ChartInsideSheet";
+import { ChartPoint } from "@/components/charts/ChartInsideSheet";
 
 // Extra Time 입력 항목 (TimeInput.tsx와 순환 참조 방지 위해 별도 정의)
 export const TIME_INPUT_ITEMS = [
@@ -109,7 +109,6 @@ interface SangSiIlGiStore extends SangSiIlGi {
   setTeukSinCount: (name: TeukSinGeupItem, count: number) => void;
   setBeopMaCount: (name: BeopMaSangJeonGeupItem, count: number) => void;
   resetGyeMoon: () => void;
-  // Extra Time 관련 상태 및 액션
   extraTimes: Record<TimeInputItem, number>;
   tableMode: boolean;
   setTime: (item: TimeInputItem, minutes: number) => void;
@@ -144,22 +143,6 @@ export const useSangSiIlGiStore = create<SangSiIlGiStore>()(
       // 온생취
       onSaengChwi: [{ name: "default", yooNyum: 0, mooNyum: 0 }],
       miRiJoonBi: { yooNyum: 0, mooNyum: 0 },
-      study: {
-        gyungJeon: { minuteSpent: 0 },
-        beopGyoo: { minuteSpent: 0 },
-        gangYeon: { minuteSpent: 0 },
-      },
-      saRiYeonGoo: {
-        hwoeHwa: { minuteSpent: 0 },
-        euDoo: { minuteSpent: 0 },
-        seongRi: { minuteSpent: 0 },
-      },
-      jungSinSooYang: {
-        yeonBool: { minuteSpent: 0 },
-        jwaSon: { minuteSpent: 0 },
-        giDoh: { minuteSpent: 0 },
-        chamHwoeBanSeong: { yooNyum: 0, mooNyum: 0 },
-      },
       gyoDangNaeWang: {
         gongBooMoonDap: { yooNyum: 0, mooNyum: 0 },
         gamGakGamJeong: { yooNyum: 0, mooNyum: 0 },
@@ -206,18 +189,19 @@ export const useSangSiIlGiStore = create<SangSiIlGiStore>()(
           const list = state.onSaengChwi.filter((_, i) => i !== index);
           return { onSaengChwi: list.length ? list : [state.onSaengChwi[0]] };
         }),
-      updateOnSaengChwi: (index, delta) =>
-        set(state => ({
-          onSaengChwi: state.onSaengChwi.map((item, i) =>
-            i === index
-              ? {
-                  ...item,
-                  yooNyum: item.yooNyum + (delta.yooNyum ?? 0),
-                  mooNyum: item.mooNyum + (delta.mooNyum ?? 0),
-                }
-              : item
-          ),
-        })),
+      updateOnSaengChwi: (index, delta) => {
+        set(state => {
+          const list = state.onSaengChwi.map((entry, idx) => {
+            if (idx !== index) return entry;
+            return {
+              ...entry,
+              yooNyum: entry.yooNyum + (delta.yooNyum ?? 0),
+              mooNyum: entry.mooNyum + (delta.mooNyum ?? 0),
+            };
+          });
+          return { onSaengChwi: list };
+        });
+      },
       updateOnSaengChwiName: (index, newName) =>
         set(state => ({
           onSaengChwi: state.onSaengChwi.map((item, i) =>
