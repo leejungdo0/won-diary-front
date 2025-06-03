@@ -21,7 +21,6 @@ import {
   YAxis,
   Tooltip,
   Line,
-  PieChart,
 } from "recharts";
 
 const chartData = fakeLineChartData as { date: string; value: number }[];

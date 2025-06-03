@@ -1,9 +1,10 @@
 "use client";
 
 import GyeMoon from "@/components/GyeMoon";
+import JakEopSiGan from "@/components/JakEopSiGan";
 import OnSaengChwi from "@/components/OnSaengChwi";
 import ResetLocalStorageButton from "@/components/ResetLocalStorageButton";
-import TimeInput from "@/components/TimeInput";
+import SooYangYeonGooSiGan from "@/components/SooYangYeonGooSigan";
 import React from "react";
 
 export default function Page() {
@@ -14,7 +15,8 @@ export default function Page() {
           <OnSaengChwi />
         </div>
         <div className="p-4">
-          <TimeInput />
+          <SooYangYeonGooSiGan />
+          <JakEopSiGan />
         </div>
         <div className="p-4">
           <GyeMoon />

@@ -23,7 +23,7 @@ export default function Home() {
     ssr: false,
     loading: () => <Loading />,
   });
-  const TimeInput = dynamic(() => import("@/components/TimeInput"), {
+  const TimeInput = dynamic(() => import("@/components/SooYangYeonGooSigan"), {
     ssr: false,
     loading: () => <Loading />,
   });

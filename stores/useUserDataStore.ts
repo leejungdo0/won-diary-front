@@ -1,10 +1,11 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { UserData, UserSettings } from "@/types";
+import { getTodayDateString } from "@/lib/utils";
 
 // 초기값 정의
 const initialData: UserData = {
-  date: new Date().toISOString().slice(0, 10), // 오늘 날짜 YYYY-MM-DD
+  date: getTodayDateString(),
   settings: {
     isTableMode: false,
     lastOpenTab: "bo",

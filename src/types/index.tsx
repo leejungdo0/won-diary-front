@@ -1,5 +1,3 @@
-import { TimeInputItem } from "stores/useSangSiIlGiStore";
-
 export interface UserData {
   date: string; // "YYYY-MM-DD" 형태의 날짜
   settings: UserSettings; // 사용자 설정
@@ -15,9 +13,9 @@ export interface SangSiIlGi {
   onSaengChwi: OnSaengChwi[]; // 온생취(이름·유념·무념 리스트)
   miRiJoonBi: YooMooNyum; // 미리준비(유념·무념)
   gyoDangNaeWang: GyoDangNaeWang; // 교당내왕
-  jakEopSiGan: JakEopSiGan; // 작업시간
   gyeMoon: GyeMoon; // 계문
-  extraTimes: Record<TimeInputItem, number>; // Extra Time 관련 상태
+  sooYangYeonGooSiGan: SooYangYeongGooSiGan; // 수양연구시간
+  jakEopSiGan: JakEopSiGan; // 작업시간
 }
 
 // onSaengChwi 배열 아이템
@@ -54,6 +52,39 @@ export interface JakEopSiGan {
   sooMyeon: MinuteSpent;
   heoSong: MinuteSpent;
 }
+
+export const JAK_EOP_SI_GAN_ITEMS = {
+  hakSeup: "학습",
+  bongGong: "봉공",
+  hyooSik: "휴식",
+  sooMyeon: "수면",
+  heoSong: "허송",
+};
+
+// 시간 입력
+export type SooYangYeongGooSiGan = {
+  gyungJeon: MinuteSpent;
+  beopGyoo: MinuteSpent;
+  gangYeon: MinuteSpent;
+  hwoeHwa: MinuteSpent;
+  euDoo: MinuteSpent;
+  seongRi: MinuteSpent;
+  yeomBool: MinuteSpent;
+  jwaSeon: MinuteSpent;
+  giDo: MinuteSpent;
+};
+
+export const SOO_YANG_YEON_GU_ITEMS = {
+  gyungJeon: "경전",
+  beopGyoo: "법규",
+  gangYeon: "강연",
+  hwoeHwa: "회화",
+  euDoo: "의두",
+  seongRi: "성리",
+  yeomBool: "염불",
+  jwaSeon: "좌선",
+  giDo: "기도",
+};
 
 // 계문
 export type BoTongGeupItem =

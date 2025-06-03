@@ -15,7 +15,6 @@ import {
   TeukSinGeupCounts,
   BeopMaSangJeonGeupCounts,
 } from "@/types";
-import { ExtraItem } from "@/components/TimeInput";
 import { ChartPoint } from "@/components/charts/ChartInsideSheet";
 
 // Extra Time 입력 항목 (TimeInput.tsx와 순환 참조 방지 위해 별도 정의)
@@ -37,7 +36,7 @@ export const TIME_INPUT_ITEMS = [
 ] as const;
 
 // 예시 초기값 (mock 데이터)
-export const exampleChartData: Record<ExtraItem, ChartPoint[]> = {
+export const exampleChartData: Record<string, ChartPoint[]> = {
   경전: [
     { date: "2025-05-25", value: 120 },
     { date: "2025-05-26", value: 150 },
@@ -109,12 +108,17 @@ interface SangSiIlGiStore extends SangSiIlGi {
   setTeukSinCount: (name: TeukSinGeupItem, count: number) => void;
   setBeopMaCount: (name: BeopMaSangJeonGeupItem, count: number) => void;
   resetGyeMoon: () => void;
-  extraTimes: Record<TimeInputItem, number>;
+
   tableMode: boolean;
-  setTime: (item: TimeInputItem, minutes: number) => void;
   setTableMode: (mode: boolean) => void;
-  resetTimes: () => void;
-  chartData?: Record<ExtraItem, ChartPoint[]>;
+
+  // 추가된 set 함수들
+  setSooYangTime: (item: keyof SangSiIlGi["sooYangYeonGooSiGan"], minutes: number) => void;
+  setJakEopTime: (item: keyof SangSiIlGi["jakEopSiGan"], minutes: number) => void;
+  resetSooYangTimes: () => void;
+  resetJakEopTimes: () => void;
+
+  chartData?: Record<string, ChartPoint[]>;
 }
 
 // 계문 초기 배열 생성
@@ -131,11 +135,27 @@ const initialBeopMa: BeopMaSangJeonGeupCounts[] = Object.keys(BeopMaSangJeonGeup
   count: 0,
 }));
 
-// Extra Time 초기값
-const initialExtraTimes: Record<TimeInputItem, number> = TIME_INPUT_ITEMS.reduce(
-  (acc, item) => ({ ...acc, [item]: 0 }),
-  {} as Record<TimeInputItem, number>
-);
+// 수양연구 시간 초기값
+const initialSooYang: SangSiIlGi["sooYangYeonGooSiGan"] = {
+  gyungJeon: { minuteSpent: 0 },
+  beopGyoo: { minuteSpent: 0 },
+  gangYeon: { minuteSpent: 0 },
+  hwoeHwa: { minuteSpent: 0 },
+  euDoo: { minuteSpent: 0 },
+  seongRi: { minuteSpent: 0 },
+  yeomBool: { minuteSpent: 0 },
+  jwaSeon: { minuteSpent: 0 },
+  giDo: { minuteSpent: 0 },
+};
+
+// 작업 시간 초기값
+const initialJakEop: SangSiIlGi["jakEopSiGan"] = {
+  hakSeup: { minuteSpent: 0 },
+  bongGong: { minuteSpent: 0 },
+  hyooSik: { minuteSpent: 0 },
+  sooMyeon: { minuteSpent: 0 },
+  heoSong: { minuteSpent: 0 },
+};
 
 export const useSangSiIlGiStore = create<SangSiIlGiStore>()(
   persist(
@@ -151,21 +171,16 @@ export const useSangSiIlGiStore = create<SangSiIlGiStore>()(
         yeHwoeJeonSim: false,
         soDeukBanJo: false,
       },
-      jakEopSiGan: {
-        hakSeup: { minuteSpent: 0 },
-        bongGong: { minuteSpent: 0 },
-        hyooSik: { minuteSpent: 0 },
-        sooMyeon: { minuteSpent: 0 },
-        heoSong: { minuteSpent: 0 },
-      },
       // 계문
       gyeMoon: {
         boTongGeup: initialBoTong,
         teukSinGeup: initialTeukSin,
         beopMaSangJeonGeup: initialBeopMa,
       },
-      // Extra Time
-      extraTimes: initialExtraTimes,
+      // 수양연구 시간
+      sooYangYeonGooSiGan: initialSooYang,
+      // 작업 시간
+      jakEopSiGan: initialJakEop,
       tableMode: false,
 
       // 온생취 이름
@@ -195,8 +210,8 @@ export const useSangSiIlGiStore = create<SangSiIlGiStore>()(
             if (idx !== index) return entry;
             return {
               ...entry,
-              yooNyum: entry.yooNyum + (delta.yooNyum ?? 0),
-              mooNyum: entry.mooNyum + (delta.mooNyum ?? 0),
+              yooNyum: entry.yooNyum + (delta.yooNyum || 0),
+              mooNyum: entry.mooNyum + (delta.mooNyum || 0),
             };
           });
           return { onSaengChwi: list };
@@ -207,7 +222,6 @@ export const useSangSiIlGiStore = create<SangSiIlGiStore>()(
           onSaengChwi: state.onSaengChwi.map((item, i) =>
             i === index
               ? {
-                  // 이름만 바꿀 수 있도록, 기존 name → 새 name
                   name: newName,
                   yooNyum: item.yooNyum,
                   mooNyum: item.mooNyum,
@@ -218,8 +232,8 @@ export const useSangSiIlGiStore = create<SangSiIlGiStore>()(
       updateMiRiJoonBi: delta =>
         set(state => {
           const newMi = {
-            yooNyum: state.miRiJoonBi.yooNyum + (delta.yooNyum ?? 0),
-            mooNyum: state.miRiJoonBi.mooNyum + (delta.mooNyum ?? 0),
+            yooNyum: state.miRiJoonBi.yooNyum + (delta.yooNyum || 0),
+            mooNyum: state.miRiJoonBi.mooNyum + (delta.mooNyum || 0),
           };
           return {
             miRiJoonBi: newMi,
@@ -227,8 +241,8 @@ export const useSangSiIlGiStore = create<SangSiIlGiStore>()(
               i === 0
                 ? {
                     ...item,
-                    yooNyum: item.yooNyum + (delta.yooNyum ?? 0),
-                    mooNyum: item.mooNyum + (delta.mooNyum ?? 0),
+                    yooNyum: item.yooNyum + (delta.yooNyum || 0),
+                    mooNyum: item.mooNyum + (delta.mooNyum || 0),
                   }
                 : item
             ),
@@ -293,10 +307,23 @@ export const useSangSiIlGiStore = create<SangSiIlGiStore>()(
             beopMaSangJeonGeup: initialBeopMa,
           },
         })),
-      setTime: (item, minutes) =>
-        set(state => ({ extraTimes: { ...state.extraTimes, [item]: minutes } })),
       setTableMode: mode => set(() => ({ tableMode: mode })),
-      resetTimes: () => set(() => ({ extraTimes: initialExtraTimes })),
+      setSooYangTime: (item, minutes) =>
+        set(state => ({
+          sooYangYeonGooSiGan: {
+            ...state.sooYangYeonGooSiGan,
+            [item]: { minuteSpent: minutes },
+          },
+        })),
+      setJakEopTime: (item, minutes) =>
+        set(state => ({
+          jakEopSiGan: {
+            ...state.jakEopSiGan,
+            [item]: { minuteSpent: minutes },
+          },
+        })),
+      resetSooYangTimes: () => set(() => ({ sooYangYeonGooSiGan: initialSooYang })),
+      resetJakEopTimes: () => set(() => ({ jakEopSiGan: initialJakEop })),
     }),
     { name: "sangSiIlGi", storage: createJSONStorage(() => localStorage) }
   )
