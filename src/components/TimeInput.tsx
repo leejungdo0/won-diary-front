@@ -147,7 +147,6 @@ const ExtraTimeSlider: React.FC<SliderProps> = ({ extraTimes, onSliderChange }) 
               value={item === "학습" ? base + studyExtra : base}
               onChange={e => adjust(item, parseInt(e.target.value, 10))}
               className="w-full h-8 accent-blue-500"
-              disabled={true}
             />
             <div className="flex justify-center space-x-2">
               <button
@@ -234,7 +233,7 @@ export default function TimeInput() {
 
   return (
     <div className="w-full py-6 space-y-6">
-      <div className="max-w-sm mx-auto space-y-6">
+      <div className="max-w-md mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <Label className="text-sm font-medium">표에서 입력 모드</Label>
           <Switch checked={tableMode} onCheckedChange={setTableMode} />
