@@ -14,8 +14,12 @@ import {
   BoTongGeupCounts,
   TeukSinGeupCounts,
   BeopMaSangJeonGeupCounts,
+  MinuteSpent,
 } from "@/types";
 import { ChartPoint } from "@/components/charts/ChartInsideSheet";
+import { toast } from "react-hot-toast";
+import { debounce } from "@/lib/utils";
+import deepEqual from "fast-deep-equal";
 
 // Extra Time 입력 항목 (TimeInput.tsx와 순환 참조 방지 위해 별도 정의)
 export const TIME_INPUT_ITEMS = [
@@ -95,7 +99,7 @@ export const exampleChartData: Record<string, ChartPoint[]> = {
 
 export type TimeInputItem = (typeof TIME_INPUT_ITEMS)[number];
 
-interface SangSiIlGiStore extends SangSiIlGi {
+export interface SangSiIlGiStore extends SangSiIlGi {
   newName: string;
   setNewName: (name: string) => void;
   addOnSaengChwi: () => void;
@@ -327,4 +331,62 @@ export const useSangSiIlGiStore = create<SangSiIlGiStore>()(
     }),
     { name: "sangSiIlGi", storage: createJSONStorage(() => localStorage) }
   )
+);
+
+const MAX_MINUTES_TOTAL = 1440; // 24시간을 분 단위로 표현
+
+debounce(
+  useSangSiIlGiStore.subscribe((currState: SangSiIlGiStore, prevState: SangSiIlGiStore) => {
+    const isSame = deepEqual(currState.sooYangYeonGooSiGan, prevState.sooYangYeonGooSiGan);
+    if (isSame) return;
+
+    const sumOfTime = Object.values(currState.sooYangYeonGooSiGan)
+      .flatMap((val: MinuteSpent) => val.minuteSpent)
+      .reduce((a: number, b: number) => a + b, 0);
+    if (sumOfTime >= MAX_MINUTES_TOTAL) {
+      toast.error("시간 합계가 24시간을 초과할 수 없습니다.");
+    }
+  }),
+  3000
+);
+
+debounce(
+  (curr: SangSiIlGiStore, prev: SangSiIlGiStore) => {
+    // 같으면 아무것도 하지 않음
+    const isSame = deepEqual(curr.jakEopSiGan, prev.jakEopSiGan);
+    if (isSame) return;
+
+    // 차이가 있을 때만 합산 검사
+    const sumOfTime = Object.values(curr.jakEopSiGan)
+      .flatMap((val: MinuteSpent) => val.minuteSpent)
+      .reduce((a: number, b: number) => a + b, 0);
+
+    if (sumOfTime >= MAX_MINUTES_TOTAL) {
+      toast.error("시간 합계가 24시간을 초과할 수 없습니다.");
+    }
+  },
+  3000 // 3초 디바운스
+);
+
+debounce(
+  useSangSiIlGiStore.subscribe((currState: SangSiIlGiStore, prevState: SangSiIlGiStore) => {
+    const isSame = deepEqual(currState.jakEopSiGan, prevState.jakEopSiGan);
+    if (isSame) return;
+
+    const studyTime =
+      currState.sooYangYeonGooSiGan.gyungJeon.minuteSpent +
+      currState.sooYangYeonGooSiGan.beopGyoo.minuteSpent +
+      currState.sooYangYeonGooSiGan.gangYeon.minuteSpent;
+
+    if (currState.jakEopSiGan.hakSeup.minuteSpent < studyTime) {
+      useSangSiIlGiStore.setState(state => ({
+        jakEopSiGan: {
+          ...state.jakEopSiGan,
+          hakSeup: { minuteSpent: studyTime },
+        },
+      }));
+      toast.error("학습 시간은 수양연구 과목 시간의 합보다 작을 수 없습니다.");
+    }
+  }),
+  3000
 );

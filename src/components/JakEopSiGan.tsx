@@ -59,13 +59,13 @@ export default function JakEopSiGanTable() {
         </div>
         {tableMode ? (
           <div className="overflow-x-auto">
-            <table className="w-full table-auto border-collapse">
+            <table className="w-full table-fixed border-collapse">
               <thead>
                 <tr>
-                  <th className="border p-2 text-left">항목</th>
-                  <th className="border p-2 text-left">시간(시)</th>
-                  <th className="border p-2 text-left">시간(분)</th>
-                  <th className="border p-2 text-left">총합</th>
+                  <th className="border p-2 text-left w-15">항목</th>
+                  <th className="border p-2 text-left w-10">시간(시)</th>
+                  <th className="border p-2 text-left w-10">시간(분)</th>
+                  <th className="border p-2 text-left w-20">총합</th>
                 </tr>
               </thead>
               <tbody>

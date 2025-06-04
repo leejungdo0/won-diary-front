@@ -10,10 +10,10 @@ const nextConfig: NextConfig = {
       {
         source: "/",
         destination: "/input",
-        permanent: false, 
+        permanent: false,
       },
     ];
-  }
+  },
 };
 
 export default nextConfig;

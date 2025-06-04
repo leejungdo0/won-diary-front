@@ -14,7 +14,7 @@ export interface SangSiIlGi {
   miRiJoonBi: YooMooNyum; // 미리준비(유념·무념)
   gyoDangNaeWang: GyoDangNaeWang; // 교당내왕
   gyeMoon: GyeMoon; // 계문
-  sooYangYeonGooSiGan: SooYangYeongGooSiGan; // 수양연구시간
+  sooYangYeonGooSiGan: SooYangYeonGooSiGan; // 수양연구시간
   jakEopSiGan: JakEopSiGan; // 작업시간
 }
 
@@ -62,7 +62,7 @@ export const JAK_EOP_SI_GAN_ITEMS = {
 };
 
 // 시간 입력
-export type SooYangYeongGooSiGan = {
+export type SooYangYeonGooSiGan = {
   gyungJeon: MinuteSpent;
   beopGyoo: MinuteSpent;
   gangYeon: MinuteSpent;
