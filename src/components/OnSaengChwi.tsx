@@ -47,6 +47,9 @@ export default function OnSaengChwi() {
     updateGyoDangNaeWang,
   } = useSangSiIlGiStore();
 
+  // 한글 조합(composition) 중인지 플래그
+  const [isComposing, setIsComposing] = useState(false);
+
   // 신규 추가용 드로어 열림 여부
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
   // 이름 변경용 드로어 열림 여부 + 변경 대상 인덱스
@@ -103,7 +106,7 @@ export default function OnSaengChwi() {
                   variant="outline"
                   onClick={() => {
                     // 항상 해당 항목을 +1 한다.
-                    updateOnSaengChwi(idx, { yooNyum: 1 });
+                    updateOnSaengChwi(idx, { mooNyum: 1 });
                     // 만약 기본(idx=0)이 아니라면, 기본에도 +1 추가
                     if (idx !== 0) {
                       updateOnSaengChwi(0, { mooNyum: 1 });
@@ -163,8 +166,16 @@ export default function OnSaengChwi() {
                   type="text"
                   value={newName}
                   onChange={e => setNewName(e.target.value)}
+                  // composition이 시작될 때 true
+                  onCompositionStart={() => {
+                    setIsComposing(true);
+                  }}
+                  // composition이 끝날 때 false
+                  onCompositionEnd={() => {
+                    setIsComposing(false);
+                  }}
                   onKeyDown={e => {
-                    if (e.key === "Enter" && newName.trim()) {
+                    if (e.key === "Enter" && !isComposing) {
                       addOnSaengChwi();
                       setIsAddDrawerOpen(false);
                     }
